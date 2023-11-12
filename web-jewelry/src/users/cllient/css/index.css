@@ -1,0 +1,159 @@
+body {
+    width: 100%;
+    height: 100vh;
+}
+
+.imagesCarousel {
+    width: 100%;
+    height: 200px;
+ }
+
+.navbarColor {
+    background:#882D38;
+    height: 10vh;
+}
+
+.loginImagenResponsy {
+    width: 100%;
+    height: 90vh;
+    overflow: hidden;
+    float: left;
+    background-size: cover;
+}
+
+.cardImagenResponsy {
+    width: 100%;
+    height: 20%;
+    object-fit: cover ;
+}
+
+.homeProductPadding {
+    width: 100%;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.carouselPadding {
+    height: 20vh;
+    overflow: hidden;
+}
+
+
+.homeProductScroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    height: 90vh;
+    border: 1px black solid;
+}
+
+.homeProductScroll::-webkit-scrollbar{
+    width: 8px;
+    background-color: #882d38;
+    border-radius: 20px;
+    border: 1px black solid;
+}
+
+.homeProductScroll::-webkit-scrollbar:window-inactive {
+    display: none;
+}
+
+.homeProductScroll::-webkit-scrollbar-thumb  {
+    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px black solid;
+}
+
+.boxProductos {
+    background-color: aliceblue;
+    border: 1px black solid;
+    border-radius: 10px;
+    width: 100%;
+    height: 80vh;
+}
+
+.boxHistoryProduct {
+    background-color: aliceblue;
+    border: 1px black solid;
+    border-radius: 10px;
+    width: 100%;
+    height: 40vh;
+}
+
+.boxProductsButtom {
+    width: 100%;
+    top: 5vh;
+    overflow: hidden;
+}
+
+.boxProductsHeigth1 {
+    height: 75vh;
+    overflow-x: auto;
+}
+
+
+.boxProductsHeigth2 {
+    height: 80vh;
+}
+
+.boxProductsHeigth3 {
+    height: 5vh;
+}
+
+.cardDontProductCenter {
+    font-size: 16px;
+    display: flex;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.cardDontProductContainer {
+    position: relative;
+    height: 100px;
+    border-bottom: gray 1px solid;
+    display: flex;
+    align-items: center;
+}
+
+.imgAdapterCard {
+    width: 80px;
+    height: auto;
+}
+
+.imgAdapterProductsCard {
+    width: 10px;
+    height: auto;
+}
+
+.inputCounter {
+    border: solid black 1px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.pageProductId {
+    border: #bdbdbd solid 1px;
+    width: 100%;
+    height: 80vh;
+    border-radius: 10px;
+}
+
+.pageProductId {
+    height: 80vh;
+}
+
+.containerProductId {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imageProductId {
+    width: 600px;
+    height: auto;
+    align-items: center;
+}
