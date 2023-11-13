@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { Col, Container, Image, Row } from "react-bootstrap";
 
 export const Supplier = () => {
     // USESTATE PARA ESTADO DE MODAL
@@ -39,7 +40,7 @@ export const Supplier = () => {
     };
 
     return (
-        <div style={{ padding: '30px', backgroundColor: '#F1F1F1', height: '100vh' }}>
+        <Container>
             <div style={{ padding: '25px', textAlign: 'center' }}>
                 <h1>Lista de proveedores</h1>
             </div>
@@ -47,7 +48,7 @@ export const Supplier = () => {
                 <button onClick={() => handleShow('Agregar proveedor')} className='btn btn-success'>Agregar</button>
             </div>
             {/* TABLA DE PROVEEDORES */}
-            <div>
+            <div style={{ overflowY: 'scroll', height: '400px' }}>
                 <Table striped bordered hover size="sm">
                     <thead>
                     <tr>
@@ -66,7 +67,7 @@ export const Supplier = () => {
                             <td>{proveedor.phone}</td>
                             <td>{proveedor.email}</td>
                             <td>
-                                <button onClick={() => handleShow('Editar información de proveedor', proveedor)} style={{margin:'10px 8px 10px 10px'}} className='btn btn-primary'>
+                                <button onClick={() => handleShow('Editar información de proveedor', proveedor)} style={{ margin: '10px 8px 10px 10px' }} className='btn btn-primary'>
                                     Editar
                                 </button>
                                 <button className='btn btn-danger'>Eliminar</button>
@@ -78,7 +79,7 @@ export const Supplier = () => {
             </div>
 
             {/* MODAL PARA EDITAR */}
-            <Modal show={showModalEdit} onHide={handleClose}>
+            <Modal style={{ margin: 'auto', top: '15%' }} show={showModalEdit} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{titleModal}</Modal.Title>
                 </Modal.Header>
@@ -104,6 +105,6 @@ export const Supplier = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </Container>
     )
 }
