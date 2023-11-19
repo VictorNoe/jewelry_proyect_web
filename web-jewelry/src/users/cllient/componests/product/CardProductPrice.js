@@ -1,15 +1,27 @@
-import {Button, Card, Col, Form, InputGroup, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Form, InputGroup, Row} from "react-bootstrap";
+import {useNavigate, useParams} from "react-router-dom";
+import {useServicesIdProduct} from "../../hooks/useServicesIdProduct";
+import {ButtomCard} from "./ButtomCard";
 
 export const CardProductPrice = () => {
+
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const { product} = useServicesIdProduct(id);
+
+    if ( product === undefined ) {
+        navigate("/home")
+    }
+
     return (
         <Card style={{ width: 'auto'}}>
             <Card.Body>
-                <Card.Title>Pulsera de Niñas Best Day</Card.Title>
-                <Card.Subtitle className="mb-4 text-muted">Anillo</Card.Subtitle>
+                <Card.Title>{product.nombre}</Card.Title>
+                <Card.Subtitle className="mb-4 text-muted">{  }</Card.Subtitle>
                 <Card.Text>
-                    Anillo Ruso "Charlize" con 3 anillos en oro vermeil
+                    { product.descripcion }
                 </Card.Text>
-                <Card.Title className="mt-5" >$2,000.00</Card.Title>
+                <Card.Title className="mt-5" >{`$${ product.precio }.00`}</Card.Title>
                 <Card.Subtitle className="mb-2 mt-5 text-muted">Stock disponible</Card.Subtitle>
                 <Row className="mt-3">
                     <Col xs={7}>
@@ -32,29 +44,22 @@ export const CardProductPrice = () => {
                             </Button>
                         </InputGroup>
                         <Card.Text className="text-center">
-                            12 disponibles
+                            {`${ product.stock } disponibles`}
                         </Card.Text>
                     </Col>
                 </Row>
                 <Row className="text-center mt-4">
                     <Col xs={12}>
-                        <Button
-                            size="lg"
-                            type="submit"
-                            style={{background: "#882D38", borderColor: "#882D38", width: "100%"}}
-                        >
-                            Comprar ahora
-                        </Button>
+                        <ButtomCard
+                            name = {"Comprar ahora"}
+                            color = {"#882D38"}
+                        />
                     </Col>
                     <Col xs={12}>
-                        <Button
-                            size="lg"
-                            type="submit"
-                            className="mt-3"
-                            style={{background: "#BC9709", borderColor: "#BC9709", width: "100%"}}
-                        >
-                            Agregar al carrito
-                        </Button>
+                        <ButtomCard
+                            name = {"Agregar al carrito"}
+                            color = {"#BC9709"}
+                        />
                     </Col>
                 </Row>
             </Card.Body>

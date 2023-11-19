@@ -4,12 +4,13 @@ import "../css/index.css"
 import {useContext} from "react";
 import {AuthContext} from "../../../auth/context/index";
 import {CartNav} from "./cart/CartNav";
+import {useServicesCart} from "../hooks/useServicesCart";
 
 export const NavbarClient = () => {
 
     const  { user } = useContext( AuthContext );
-
-    const counterProduct = 1
+    const { cart } = useServicesCart(  );
+    console.log(cart)
 
     return (
         <Navbar data-bs-theme="dark" className="navbarColor">
@@ -45,9 +46,9 @@ export const NavbarClient = () => {
                                     </svg>
                                 }
                                 {
-                                    (counterProduct > 0 && user?.status) &&
+                                    (cart.length > 0 && user?.status) &&
                                     <span
-                                        className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{counterProduct}<span
+                                        className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{cart.length}<span
                                         className="visually-hidden">unread messages</span>
                                         </span>
                                 }

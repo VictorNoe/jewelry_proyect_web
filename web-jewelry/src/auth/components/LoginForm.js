@@ -1,34 +1,13 @@
 import {Button, Form} from "react-bootstrap";
-import {useContext, useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import swal from "sweetalert";
+import {useState} from "react";
+import {Link} from "react-router-dom";
+import {useServicesIdPerson} from "../../users/cllient/hooks/useServicesIdPerson";
 
 export const LoginForm = () => {
-    const [users, setUsers] = useState([]);
     const [email, setEMail] = useState('');
     const [password, setPassword] = useState('');
+    const { getUserId } = useServicesIdPerson()
 
-    const { login } =useContext( AuthContext )
-    const navigate = useNavigate();
-
-    const getPerson = () => {
-        try {
-            fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
-                res.json()
-            ).then((resp) => {
-                console.log(resp)
-                setUsers([resp])
-            }).catch((error) => {
-                console.log(error);
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    useEffect(()=>{
-        getPerson()
-    },[])
     const onEmail= ({target}) => {
         setEMail(target.value)
 
@@ -38,35 +17,9 @@ export const LoginForm = () => {
 
     }
     const onLogged = (event) => {
-
         event.preventDefault()
-
-
-        let valide = false;
-        event.preventDefault();
-        //const lastPath = localStorage.getItem('lastPath') || '/'
-
-        for (let i = 0; i < users[0].length; i++){
-            if (users[0][i].username === password && users[0][i].email === email){
-                login(users[0][i].id, users[0][i].email);
-                navigate("/", {
-                    replace: true
-                })
-                valide = true
-            }
-        }
-
-        if (!valide) {
-            swal({
-                title: "Sesión fallida",
-                text: "El usuario o contraseña son incorrectos",
-                icon: "warning",
-                button: false,
-                timer: 3000
-            });
-        }
+        getUserId( email, password )
     }
-
 
     return (
         <Form onSubmit={ onLogged }>
@@ -75,6 +28,7 @@ export const LoginForm = () => {
                 <Form.Label>Email</Form.Label>
                 <Form.Floating className="mb-3">
                     <Form.Control
+                        required
                         id="floatingInputCustom4"
                         type="email"
                         placeholder="name@example.com"
@@ -85,6 +39,7 @@ export const LoginForm = () => {
                 <Form.Label>Contraseña</Form.Label>
                 <Form.Floating>
                     <Form.Control
+                        required
                         id="floatingPasswordCustom2"
                         type="password"
                         placeholder="Password"
@@ -103,7 +58,7 @@ export const LoginForm = () => {
                     Iniciar Sesion
                 </Button>
                 <Form.Text className="text-muted text-center" >
-                    <Link to="" className="nav-link">
+                    <Link to="/login/recover" className="nav-link">
                         ¿Se te olvidó tu contraseña?
                     </Link>
                 </Form.Text>

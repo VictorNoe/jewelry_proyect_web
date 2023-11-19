@@ -91,7 +91,6 @@ body {
     overflow-x: auto;
 }
 
-
 .boxProductsHeigth2 {
     height: 80vh;
 }
@@ -156,4 +155,9 @@ body {
     width: 600px;
     height: auto;
     align-items: center;
+}
+
+.hijo {
+    position: absolute;
+    top: 30vh;
 }

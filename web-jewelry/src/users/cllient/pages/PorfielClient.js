@@ -1,15 +1,18 @@
 import {Col, Container, Row} from "react-bootstrap";
-import {useContext} from "react";
-import {AuthContext} from "../../../auth/context/AuthContext";
+import {InformationPorfile} from "../componests/porfile/InformationPorfile";
+
 
 export const PorfielClient = () => {
 
-    const { user } = useContext( AuthContext )
+
     return (
         <Container fluid>
             <Row>
-                <Col>
-                    {user?.email}
+                <Col className="animate__animated animate__slideInLeft" sm={4} style={{backgroundColor: "#D9D9D9", height: "90vh"}}>
+                    <InformationPorfile/>
+                </Col>
+                <Col sm={8}>
+
                 </Col>
             </Row>
         </Container>

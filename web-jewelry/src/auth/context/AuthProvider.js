@@ -16,9 +16,9 @@ export const AuthProvider = ({children}) => {
 
     const [ authState, dispatch ] = useReducer( AuthReducer, {}, init );
 
-    const login = (id = 1, email = '') => {
+    const login = ( email = '' ) => {
 
-        const user = { id, email, status: true , role: 1, token: '' }
+        const user = { email, status: true , role: 1, token: '' }
 
         const action = {
             type: types.login,
@@ -27,7 +27,6 @@ export const AuthProvider = ({children}) => {
 
             localStorage.setItem('user', JSON.stringify( user ));
             dispatch( action );
-
     }
 
     const logout = () => {
@@ -35,14 +34,14 @@ export const AuthProvider = ({children}) => {
         const action = {
             type: types.logout
         };
-        dispatch(action);
+        dispatch( action );
     }
 
    return (
        <AuthContext.Provider value={{
            ...authState,
            login,
-           logout
+           logout,
        }}>
            {children}
        </AuthContext.Provider>
