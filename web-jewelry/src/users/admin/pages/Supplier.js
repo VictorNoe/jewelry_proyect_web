@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import Table from 'react-bootstrap/Table';
-import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Col, Container, Image, Row } from "react-bootstrap";
+import {Container} from "react-bootstrap";
 
 export const Supplier = () => {
     // USESTATE PARA ESTADO DE MODAL
@@ -21,7 +20,6 @@ export const Supplier = () => {
             .then((res) =>
                 res.json(),
             ).then((resp) => {
-            console.log(resp)
             setProveedores(resp)
         }).catch((error) => {
             console.log(error);
@@ -78,7 +76,7 @@ export const Supplier = () => {
                 </Table>
             </div>
 
-            {/* MODAL PARA EDITAR */}
+            {/* MODAL */}
             <Modal style={{ margin: 'auto', top: '15%' }} show={showModalEdit} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{titleModal}</Modal.Title>
@@ -89,7 +87,7 @@ export const Supplier = () => {
                         <Form.Control type='text' value={proveedorSeleccionado?.name || ''} />
                         <br />
                         <Form.Label>Número de teléfono</Form.Label>
-                        <Form.Control type="text" value={proveedorSeleccionado?.phone || ''} />
+                        <Form.Control type="tel" value={proveedorSeleccionado?.phone || ''} />
                         <br />
                         <Form.Label>Correo electrónico</Form.Label>
                         <Form.Control type='email' value={proveedorSeleccionado?.email || ''} />

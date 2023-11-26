@@ -3,6 +3,7 @@ import {NavbarAdmin} from "../componests/NavbarAdmin";
 import {HomeProducts} from "../../cllient/pages/HomeProducts";
 import {Supplier} from "../pages/Supplier";
 import {AdminProducts} from "../pages/AdminProducts";
+import {Users} from "../pages/Users";
 
 export const AdminRoutes = () => {
     return (
@@ -12,10 +13,11 @@ export const AdminRoutes = () => {
 
             <Routes>
                 <Route path="*" element={<HomeProducts/>}/>
-                <Route path="provedores" element={<Supplier/>}/>
+                <Route path="proveedores" element={<Supplier/>}/>
                 <Route path="*" element={<Navigate to={"/adminHome"}/>}/>
-                <Route path="adminproducts" element={AdminProducts}/>
-            </Routes>w
+                <Route path="productos" element={<AdminProducts/>}/>
+                <Route path="usuarios" element={<Users/>}/>
+            </Routes>
 
         </>
     )
