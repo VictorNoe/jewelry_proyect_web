@@ -1,9 +1,9 @@
 import {Button, Form, InputGroup} from "react-bootstrap";
 import {usePrice} from "../../hooks/usePrice";
 
-export const Counter = ( { id ,stock } ) => {
+export const Counter = ( { stock} ) => {
 
-    const { item, removeItem, addItem } = usePrice( id );
+    const { item, removeItem, addItem } = usePrice();
 
     return (
         <InputGroup className="mb-3 inputCounter">

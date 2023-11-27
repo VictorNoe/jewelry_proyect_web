@@ -161,3 +161,18 @@ body {
     position: absolute;
     top: 30vh;
 }
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    overflow: hidden;
+}
+
+.centerInfoPorfile {
+    display: flex;
+    justify-content: center;
+    height: 90vh;
+    overflow: hidden;
+}

@@ -6,14 +6,15 @@ import {ShoppingCart} from "../pages/ShoppingCart";
 import {PrivateRoute} from "../../../router/PrivateRoute";
 import {PublicRoute} from "../../../router/PublicRoute";
 import {PorfielClient} from "../pages/PorfielClient";
-import {ShoppingHistory} from "../pages/ShoppingHistory";
+import {History} from "../pages/History";
 import {ProductPage} from "../pages/ProductPage";
 import {Register} from "../pages/Register";
 import {RecoverPasswordPage} from "../../../auth/pages/RecoverPasswordPage";
+import {UserProviderCart} from "../context/userProviderCart";
 
 export const ClientRoutes = () => {
     return (
-        <>
+        <UserProviderCart>
             <NavbarClient/>
 
             <Routes>
@@ -34,13 +35,13 @@ export const ClientRoutes = () => {
                         <Routes>
                             <Route path="porfile" element={<PorfielClient/>}/>
                             <Route path="cart" element={<ShoppingCart/>}/>
-                            <Route path="history" element={<ShoppingHistory/>}/>
+                            <Route path="history" element={<History/>}/>
                         </Routes>
                     </PrivateRoute>
                 }/>
                 <Route path="/" element={<Navigate to={"/home"} />}/>
                 <Route path="*" element={<a>404</a>}/>
             </Routes>
-        </>
+        </UserProviderCart>
     )
 }

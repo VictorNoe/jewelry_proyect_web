@@ -4,31 +4,34 @@ import {Container, Row} from "react-bootstrap";
 import "../css/index.css"
 import {useServicesAllProducts} from "../hooks/useServicesAllProducts";
 import {DontProducts} from "../componests/product/DontProducts";
+import {Loading} from "../componests/Loading";
 
 export const HomeProducts = () => {
 
     const { products, isLoading, countProducts } = useServicesAllProducts();
+    console.log(products)
 
     return (
         <>
             <Container fluid className="homeProductPadding homeProductScroll">
                 <Row className="cardlPadding mb-3">
                     {
-                        isLoading && ( <h2>Cargando...</h2> )
+                        isLoading && (<Loading/>)
                     }
                     {
                         countProducts && (<DontProducts/>)
                     }
 
                     {
-                        products.map( ({id_producto, nombre, descripcion, precio, foto, estatus }) => (
+                        products.map( ({id, name, description, price, image, status, discount_price}) => (
                             <ProductsCards
-                                id = {id_producto}
-                                name = {nombre}
-                                description= {descripcion}
-                                image={foto}
-                                prices={precio}
-                                status = {estatus}
+                                id = {id}
+                                name = {name}
+                                description= {description}
+                                image={image}
+                                prices={price}
+                                status = {status}
+                                discount = {discount_price }
                             />
                         ))
                     }

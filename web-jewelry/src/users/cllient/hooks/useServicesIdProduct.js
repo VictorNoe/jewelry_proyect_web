@@ -6,7 +6,7 @@ export const useServicesIdProduct = (id) => {
     const [countProducts, setContProcuts] = useState(false);
 
     const getCartId = async () => {
-        await fetch(`http://localhost:8080/api/productos/${ id }`, {
+        await fetch(`http://localhost:8080/api/products/${ id }`, {
             method: "GET",
             headers: {
                 "Content-type": "application/json"
@@ -24,7 +24,7 @@ export const useServicesIdProduct = (id) => {
     }
 
     useEffect( () => {
-        getCartId();
+        getCartId()
     },[])
 
     return {

@@ -6,7 +6,7 @@ import {useServicesIdPerson} from "../../users/cllient/hooks/useServicesIdPerson
 export const LoginForm = () => {
     const [email, setEMail] = useState('');
     const [password, setPassword] = useState('');
-    const { getUserId } = useServicesIdPerson()
+    const { getLogin } = useServicesIdPerson()
 
     const onEmail= ({target}) => {
         setEMail(target.value)
@@ -18,7 +18,7 @@ export const LoginForm = () => {
     }
     const onLogged = (event) => {
         event.preventDefault()
-        getUserId( email, password )
+        getLogin( email, password )
     }
 
     return (

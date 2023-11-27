@@ -1,19 +1,22 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {AuthContext} from "../../../auth/context/AuthContext";
 
-export const useServicesCart = ( email ) => {
+export const useServicesCart = () => {
 
     const [cart, setCart] = useState([]);
-    const [state, setState] = useState([]);
+    const [state, setState] = useState(false);
+
+    const { user } = useContext( AuthContext )
 
     const getCart = async () => {
-        await fetch(`http://localhost:8080/api/carrito/get`, {
+        await fetch(`http://localhost:8080/api/cart/consult`, {
             method: "POST",
             headers: {
-                'Accept': 'application/json',
-                "Content-type": "application/json"
+                "Content-type": "application/json",
+                'Authorization': `Bearer ${user?.token}`
             },
             body: JSON.stringify({
-                "correo": `${email}`,
+                "email": user?.email,
             }),
         })
             .then((response) => response.json())
@@ -22,7 +25,6 @@ export const useServicesCart = ( email ) => {
                     setCart(data)
                     setState(true)
                 }
-
             })
             .catch((err) => console.log(err));
     }
@@ -33,6 +35,7 @@ export const useServicesCart = ( email ) => {
 
     return {
         cart,
-        state
+        state,
+        getCart,
     }
 }

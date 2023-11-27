@@ -15,11 +15,15 @@ export const CardProductoCart = ( {state, cart} ) => {
                         state
                             ? (cart.map( (product) => (
                                 <ProductCard
-                                    image = {product.foto}
-                                    name = {product.nombre}
-                                    stock = {product.stock}
-                                    price = {product.precio}
-                                    id = {product.id_producto}
+                                    amount = {product?.amount}
+                                    discount = {product?.products.discount_price}
+                                    image = {product?.products.image}
+                                    name = {product?.products.name}
+                                    stock = {product?.products.stock}
+                                    price = {product?.products.price}
+                                    id = {product?.products.id}
+                                    id_cart = {product?.id}
+                                    key={product?.id}
                                 />
                             )))
                             : <DontProductCard/>

@@ -1,45 +1,89 @@
-import {Col, Container, Image, Row} from "react-bootstrap";
-import {useContext} from "react";
-import userImage from "../../../../image/user.png"
-import {AuthContext} from "../../../../auth/context/AuthContext";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import { useState} from "react";
+import {useServiceUpdateUser} from "../../hooks/useServiceUpdateUser";
 
 export const InformationPorfile = () => {
-    const { user } = useContext( AuthContext )
+
+    const [name, setName] = useState('');
+    const [lastNameP, setLastNameP] = useState('');
+    const [lastNameM, setLastNameM] = useState('');
+    const [address, setAddress] = useState('');
+
+    const {clientInfo} = useServiceUpdateUser();
+
     return (
-        <Container>
-            <Row className="text-center mt-5">
-                <Col>
-                    <Image src={userImage} style={{borderRadius: "100%"}}/>
-                </Col>
-            </Row>
-            <Row className="mt-5">
+        <Container fluid>
+            <Row className="mt-5" style={{overflowY: "auto", height: "90vh", justifyContent: "center"}}>
                 <Col sm={6}>
-                    <Container fluid>
-                        <Row className="text-end">
-                            <Col sm={12}>Nombre: </Col>
-                            <Col sm={12}>Apeliido parterno: </Col>
-                            <Col sm={12}>Apellido materno: </Col>
-                            <Col sm={12}>Correo: </Col>
+                    <Form>
+                        <Row className="mb-3">
+
+                            <Form.Group as={Col} md="12" className="mb-3">
+                                <Form.Label>Correo</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="email"
+                                    defaultValue={clientInfo?.email}
+                                    disabled
+                                />
+                            </Form.Group>
+
+                            <Form.Group as={Col} md="4" className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="Ingresa tu nombre"
+                                    defaultValue={clientInfo?.name}
+                                    onChange={(event) => setName(event.target.value)}
+                                />
+                            </Form.Group>
+
+                            <Form.Group as={Col} md="4" className="mb-3">
+                                <Form.Label>Apellido Paterno</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="Ingresa tu apellido paterno"
+                                    defaultValue={clientInfo?.surname}
+                                    onChange={(event) => setLastNameP(event.target.value)}
+                                />
+                            </Form.Group>
+
+                            <Form.Group as={Col} md="4  " className="mb-3">
+                                <Form.Label>Apellido Materno</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="Ingresa tu apellido materno"
+                                    defaultValue={clientInfo?.second_surname}
+                                    onChange={(event) => setLastNameM(event.target.value)}
+                                />
+                            </Form.Group>
+
+                            <Form.Group as={Col} md="12" className="mb-3">
+                                <Form.Label>Dirección</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    type="text"
+                                    placeholder="Ingresa tu dirección"
+                                    defaultValue={clientInfo?.address}
+                                    onChange={(event) => setAddress(event.target.value)}
+                                />
+                            </Form.Group>
+                            <div className="d-grid gap-2 col-6 mx-auto" style={{width: "100%"}}>
+                                <Button
+                                    size="lg"
+                                    variant="primary"
+                                    type={"submit"}
+                                    style={{background: "#882D38", borderColor: "#882D38"}}
+                                >
+                                    Registrar cuenta
+                                </Button>
+                            </div>
                         </Row>
-                    </Container>
-                </Col>
-                <Col sm={6}>
-                    <Container fluid>
-                        <Row className="text-start">
-                            <Col sm={12}>Nombre: </Col>
-                            <Col sm={12}>Apeliido parterno: </Col>
-                            <Col sm={12}>Apellido materno: </Col>
-                            <Col sm={12}>{user?.email}</Col>
-                        </Row>
-                    </Container>
-                </Col>
-            </Row>
-            <Row className="mt-5">
-                <Col sm={12}>
-                    Dirección
-                </Col>
-                <Col sm={12}>
-                    Las lomasturbas
+                    </Form>
                 </Col>
             </Row>
         </Container>
