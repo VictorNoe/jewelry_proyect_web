@@ -15,14 +15,17 @@ export const Supplier = () => {
     // USESTATE PARA ALMACENAR PROVEEDORES
     const [proveedores, setProveedores] = useState([]);
 
+    const url_api="http://localhost:8080/api/suppliers"
+
     useEffect(() => {
-        fetch("https://jsonplaceholder.typicode.com/users")
+        fetch(url_api)
             .then((res) =>
-                res.json(),
+                res.json()
             ).then((resp) => {
+                console.log("Respuesta:",resp)
             setProveedores(resp)
         }).catch((error) => {
-            console.log(error);
+            console.log("Error:",error);
         })
     }, [])
 
@@ -58,11 +61,11 @@ export const Supplier = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {proveedores.map(proveedor => (
-                        <tr>
-                            <td>{proveedor.id}</td>
+                    {proveedores.map((proveedor,index) => (
+                        <tr key={index}>
+                            <td>{proveedor.index}</td>
                             <td>{proveedor.name}</td>
-                            <td>{proveedor.phone}</td>
+                            <td>{proveedor.phone_number}</td>
                             <td>{proveedor.email}</td>
                             <td>
                                 <button onClick={() => handleShow('Editar información de proveedor', proveedor)} style={{ margin: '10px 8px 10px 10px' }} className='btn btn-primary'>
