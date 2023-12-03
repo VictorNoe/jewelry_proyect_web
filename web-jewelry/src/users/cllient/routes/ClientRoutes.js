@@ -40,7 +40,7 @@ export const ClientRoutes = () => {
                     </PrivateRoute>
                 }/>
                 <Route path="/" element={<Navigate to={"/home"} />}/>
-                <Route path="*" element={<a>404</a>}/>
+                <Route path="*" element={<div>404</div>}/>
             </Routes>
         </UserProviderCart>
     )

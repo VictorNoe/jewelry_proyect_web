@@ -8,6 +8,7 @@ import '../css/SeeProduct.css'
 
 export const ProductPage = () => {
 
+
     const {id} = useParams();
     const { product,countProducts,isLoading } = useServicesIdProduct(id);
 
@@ -29,7 +30,9 @@ export const ProductPage = () => {
                                 </Col>
                                 <Col xs={4}>
                                     <div style={{height: "5vh"}}></div>
-                                    <CardProductPrice/>
+                                    <CardProductPrice
+                                        image = {product?.image}
+                                    />
                                 </Col>
                             </Row>
                         </Col>

@@ -29,7 +29,7 @@ export const NavbarClient = () => {
                     <Nav className="me-auto">
                         <Nav.Link>
                             <Link to="history" className="navbar nav-link">
-                                Historial de compras
+                                {user && "Historial de compras"}
                             </Link>
                         </Nav.Link>
                     </Nav>

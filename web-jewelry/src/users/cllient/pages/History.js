@@ -1,20 +1,35 @@
-import {Col, Container, Image, Row} from "react-bootstrap";
+import {Col, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {ListHistoryUser} from "../componests/history/ListHistoryUser";
+import {useServiceHistory} from "../hooks/useServiceHistory";
 
 export const History = () => {
+    const {history} = useServiceHistory()
     return (
-        <Container style={{height:"90vh", overflow: "hidden"}}>
-            <Row className="text-center">
-                <Col xs={2}>
-                    <h3>Imagen</h3>
+        <Container style={{height:"90vh", overflow: "hidden"}} fluid>
+            <Row className="mt-3">
+                <Col md={3}>
+                    <Row>
+                        <Form>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon1">O</InputGroup.Text>
+                                <Form.Control
+                                    placeholder="Buscar"
+                                    type="text"
+                                    aria-describedby="basic-addon1"
+                                />
+                            </InputGroup>
+
+                        </Form>
+                    </Row>
                 </Col>
-                <Col xs={4}><h3>Fecha de compra</h3></Col>
-                <Col xs={3}><h3>Sub-Total</h3></Col>
-                <Col xs={3}><h3>Total</h3></Col>
-            </Row>
-            <Row>
-                <Col>
-                    <ListHistoryUser/>
+                <Col md={9}>
+                    <Row>
+                        <Col>
+                            <ListHistoryUser
+                                history={history}
+                            />
+                        </Col>
+                    </Row>
                 </Col>
             </Row>
         </Container>

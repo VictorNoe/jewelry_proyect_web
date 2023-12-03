@@ -1,5 +1,5 @@
 import { Button, Card, Col, Form, InputGroup, Row} from "react-bootstrap";
-import {Navigate, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useServicesIdProduct} from "../../hooks/useServicesIdProduct";
 import {useContext, useState} from "react";
 import {AuthContext} from "../../../../auth/context/AuthContext";
@@ -12,9 +12,30 @@ export const CardProductPrice = () => {
     const { product} = useServicesIdProduct(id);
     const { user } = useContext( AuthContext )
     const [counterProduct, setCounterProduct] = useState(1);
-    const { addProduct } = useServicesAddCart()
+    const { addProduct, buyOneProduct } = useServicesAddCart()
     const navigate = useNavigate()
 
+    
+    const ventaOne = () => {
+        Swal.fire({
+            title: "Aviso",
+            text: "¿Seguro que quieres comprar de este producto?",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#882D38",
+            confirmButtonText: "realizar compra",
+            cancelButtonText: "cancelar",
+            preConfirm: async () => {
+                if (product?.discount_price > 0) {
+                    buyOneProduct(id, product?.discount_price);
+                } else {
+                    buyOneProduct(id, product?.price);
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+
+        });
+    }
     const cunterAdd = () => {
         setCounterProduct(counterProduct + 1)
     }
@@ -102,6 +123,7 @@ export const CardProductPrice = () => {
                             type="submit"
                             className="mt-3"
                             style={{background: "#882D38", borderColor: "#882D38", width: "100%"}}
+                            onClick={ventaOne}
                         >
                             Comprar ahora
                         </Button>

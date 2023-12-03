@@ -19,6 +19,32 @@ export const useServicesAddCart = () => {
         }
     });
 
+    const buyOneProduct = async (id_cart, total) => {
+        await fetch(`http://localhost:8080/api/sales/oneSale`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.token}`
+            },
+            body: JSON.stringify({
+                "email": user?.email,
+                "id_product": id_cart,
+                "total": total
+            })
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: `${data?.message}`,
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            })
+            .catch((err) => console.log(err));
+    }
+
     const deleteProductId = async (id_cart) => {
         await fetch(`http://localhost:8080/api/cart/`, {
             method: "DELETE",
@@ -102,6 +128,7 @@ export const useServicesAddCart = () => {
     return {
         addProduct,
         updateProduct,
-        deleteProductId
+        deleteProductId,
+        buyOneProduct
     }
 }

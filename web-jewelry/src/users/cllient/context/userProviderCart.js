@@ -1,13 +1,12 @@
 import {UseContextCart} from "./useContextCart";
 import {useContext, useEffect, useState} from "react";
-import swal from "sweetalert";
 import {AuthContext} from "../../../auth/context/AuthContext";
-import {logDOM} from "@testing-library/react";
 
 export const UserProviderCart = ({ children }) => {
 
     const {user} = useContext(AuthContext)
     const [total, setTotal] = useState(0)
+    const [subTotal, setSubTotal] = useState(0)
     const [item, setItem] = useState(0)
     const [data, setData] = useState(0)
 
@@ -24,19 +23,26 @@ export const UserProviderCart = ({ children }) => {
         })
             .then((response) => response.json())
             .then(({data}) => {
-                console.log(data);
                 let t = 0
                 let l = 0
                 for (let i=0; i < data.length; i++) {
                     if(data[i]?.products.discount_price > 0){
                         t = t + (data[i]?.products.discount_price * data[i]?.amount)
+                        setSubTotal(t);
                         setTotal(t);
                     } else {
                         t = t + (data[i]?.products.price * data[i]?.amount)
+                        setSubTotal(t)
                         setTotal(t);
                     }
                     l = l + data[i]?.amount
                     setItem(l)
+                }
+
+                if (t > 10000) {
+                    t = (t)-((t * 5) / 100)
+                    t = Math.trunc(t)
+                    setTotal(t)
                 }
                 setData(data.data)
             })
@@ -48,7 +54,7 @@ export const UserProviderCart = ({ children }) => {
     },[])
 
     return (
-            <UseContextCart.Provider value={{data, item, total, getTotal}}>
+        <UseContextCart.Provider value={{data, item, total, subTotal, getTotal}}>
             {children}
         </UseContextCart.Provider>
     )

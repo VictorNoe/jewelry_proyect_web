@@ -9,13 +9,18 @@ export const InformationPorfile = () => {
     const [lastNameM, setLastNameM] = useState('');
     const [address, setAddress] = useState('');
 
-    const {clientInfo} = useServiceUpdateUser();
+    const {clientInfo, updateUser} = useServiceUpdateUser();
+
+    const update = (event) => {
+        event.preventDefault()
+        updateUser(name, lastNameM, lastNameP, address)
+    }
 
     return (
         <Container fluid>
             <Row className="mt-5" style={{overflowY: "auto", height: "90vh", justifyContent: "center"}}>
                 <Col sm={6}>
-                    <Form>
+                    <Form onSubmit={(event) => update(event)}>
                         <Row className="mb-3">
 
                             <Form.Group as={Col} md="12" className="mb-3">
@@ -72,16 +77,14 @@ export const InformationPorfile = () => {
                                     onChange={(event) => setAddress(event.target.value)}
                                 />
                             </Form.Group>
-                            <div className="d-grid gap-2 col-6 mx-auto" style={{width: "100%"}}>
-                                <Button
-                                    size="lg"
-                                    variant="primary"
-                                    type={"submit"}
-                                    style={{background: "#882D38", borderColor: "#882D38"}}
-                                >
-                                    Registrar cuenta
-                                </Button>
-                            </div>
+                            <Button
+                                size="lg"
+                                variant="primary"
+                                type="submit"
+                                style={{background: "#882D38", borderColor: "#882D38", width: "100%"}}
+                            >
+                                Actualizar información
+                            </Button>
                         </Row>
                     </Form>
                 </Col>
