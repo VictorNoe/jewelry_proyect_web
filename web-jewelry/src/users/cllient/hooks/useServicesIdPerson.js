@@ -19,8 +19,9 @@ export const useServicesIdPerson = () => {
             .then((resp) =>
                 resp.json())
             .then((data) => {
+                console.log(data)
                 if (data) {
-                    login(email, token, data.data.role);
+                    login(email, token, data.data.rol.id);
                     navigate("/", { replace: true});
                 }
             })
