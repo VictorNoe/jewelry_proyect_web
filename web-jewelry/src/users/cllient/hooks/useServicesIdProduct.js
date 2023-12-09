@@ -30,6 +30,6 @@ export const useServicesIdProduct = (id) => {
     return {
         product,
         isLoading,
-        countProducts
+        countProducts,
     }
 }

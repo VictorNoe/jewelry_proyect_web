@@ -5,8 +5,31 @@ export const useServiceHistory = () => {
 
     const {user} = useContext(AuthContext);
     const [history ,setHistory] = useState([]);
+    const [subSale, setSubeSale] = useState([]);
+    const [statusSubSale,setStatusSubSale] = useState(false);
+
+    const getSubeSale = async (id) => {
+        await fetch(`http://localhost:8080/api/sales/subsales`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.token}`
+            },
+            body: JSON.stringify({
+                "idSale": id
+            })
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                console.log(data);
+                if(data.statusCode === 200){
+                    setSubeSale(data.data);
+                    setStatusSubSale(true)
+                }
+            })
+    }
     const getHistory = async () => {
-        fetch(`http://localhost:8080/api/sales/historial`, {
+        await fetch(`http://localhost:8080/api/sales/historial`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -30,6 +53,10 @@ export const useServiceHistory = () => {
         getHistory()
     },[])
     return {
-        history
+        history,
+        getSubeSale,
+        subSale,
+        statusSubSale,
+        setStatusSubSale
     }
 }

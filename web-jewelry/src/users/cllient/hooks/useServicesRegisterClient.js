@@ -20,7 +20,7 @@ export const useServicesRegisterClient = () => {
                 "second_surname": lastNameM,
                 "address": address,
                 "rol": {
-                    "id": 1
+                    "id": 2
                 },
                 "status": {
                     "id": 1

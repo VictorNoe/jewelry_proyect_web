@@ -1,11 +1,14 @@
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../auth/context/AuthContext";
 import {UseContextCart} from "../context/useContextCart";
 import Swal from "sweetalert2";
+import {useNavigate} from "react-router-dom";
 
 export const useServicesAddCart = () => {
     const { user } = useContext( AuthContext )
     const {getTotal} = useContext(UseContextCart);
+    const navigate = useNavigate();
+    const [status, setStatus] = useState(false);
 
     const Toast = Swal.mixin({
         toast: true,
@@ -18,6 +21,23 @@ export const useServicesAddCart = () => {
             toast.onmouseleave = Swal.resumeTimer;
         }
     });
+
+    const getStatus = async (id_cart, total) => {
+        await fetch(`http://localhost:8080/api/reserved/frecuente/${user?.email}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.token}`
+            },
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                if (data?.statusCode === 200) {
+                    setStatus(true);
+                }
+            })
+            .catch((err) => console.log(err));
+    }
 
     const buyOneProduct = async (id_cart, total) => {
         await fetch(`http://localhost:8080/api/sales/oneSale`, {
@@ -34,12 +54,13 @@ export const useServicesAddCart = () => {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: `${data?.message}`,
+                    text: `El articulo ${data?.data} se compro correctamente`,
                     showConfirmButton: false,
-                    timer: 3000
+                    timer: 3000,
+                    value: navigate('/login/register', {replace: true}),
                 })
             })
             .catch((err) => console.log(err));
@@ -125,10 +146,15 @@ export const useServicesAddCart = () => {
             .catch((err) => console.log(err));
     }
 
+    useEffect(()=> {
+        getStatus()
+    },[]);
+
     return {
         addProduct,
         updateProduct,
         deleteProductId,
-        buyOneProduct
+        buyOneProduct,
+        status
     }
 }

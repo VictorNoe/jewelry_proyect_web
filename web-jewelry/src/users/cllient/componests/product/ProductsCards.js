@@ -10,7 +10,7 @@ export const ProductsCards = ({id, name, description, prices, image, discount })
             <Col sm={3} className="animate__animated animate__fadeIn mt-3" key={id}>
                 <Link to={`/product/${id}`} className="nav-link">
                     <Card>
-                        <Card.Img className="imgAdapterProductsCard" variant="top" src={`${image}`} style={{width: "100%", height: "300px", backgroundSize: "cover"}}/>
+                        <Card.Img className="imgAdapterProductsCard" variant="top" srcSet={image} style={{width: "100%", height: "300px", backgroundSize: "cover"}}/>
                         <Card.Body>
                             <Card.Title>{name}</Card.Title>
                             <Card.Text>

@@ -1,5 +1,6 @@
 import {Card} from "react-bootstrap";
 import {FormRecover} from "./FormRecover";
+import {Toaster} from "sonner";
 
 export const CardRecoverPassword = () => {
     return (

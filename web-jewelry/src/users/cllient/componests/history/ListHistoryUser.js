@@ -1,34 +1,69 @@
-import {Col, Container, Image, Row, Table} from "react-bootstrap";
+import {Container, Image, Table} from "react-bootstrap";
 import {useServiceHistory} from "../../hooks/useServiceHistory";
+import Button from "react-bootstrap/Button";
 
 export const ListHistoryUser = ({history}) => {
+    const {getSubeSale,statusSubSale,subSale,setStatusSubSale} = useServiceHistory()
+    const idProducto = (id) => {
+        getSubeSale(id);
+    }
+
+    const reset = () => {
+        setStatusSubSale(false);
+    }
+
     let i = 1;
     return (
         <Container style={{height:"90vh", overflow: "auto"}}>
-            <Table responsive bordered hover>
-                <thead style={{backgroundColor:"red"}}>
-                    <tr>
-                        <th>#</th>
-                        <th>Imagen</th>
-                        <th>Fecha</th>
-                        <th>Sub-Total</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {history.map((his)=> (
-                        <tr key={his?.id}>
-                            <td>{i++}</td>
-                            <td>
-                                <Image className="imgAdapterCard" src={"https://static.vecteezy.com/system/resources/previews/014/679/776/non_2x/cardboard-box-icon-cartoon-style-vector.jpg"}/>
-                            </td>
-                            <td>{his?.purchase_date}</td>
-                            <td>{his?.subtotal}</td>
-                            <td>{his?.total}</td>
+            {
+                statusSubSale
+                    ?
+                    <Table responsive bordered hover>
+                        <thead>
+                        <tr className="text-center">
+                            <th><Button onClick={reset} className="btn btn-sm btn-dark">Regresar</Button></th>
+                            <th>Imagen</th>
+                            <th>Nombre Producto</th>
+                            <th>Costo</th>
+                            <th>Piezas Compradas</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                        </thead>
+                        <tbody>
+                        {subSale.map((producto)=> (
+                            <tr key={producto?.id} className="text-center">
+                                <td>{i++}</td>
+                                <td>
+                                    <Image className="imgAdapterCard" src={producto?.products.image}/>
+                                </td>
+                                <td>{producto?.products.name}</td>
+                                <td>{producto?.price}</td>
+                                <td>{producto?.amount}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                    :
+                    <Table responsive bordered hover>
+                        <thead style={{backgroundColor:"red"}}>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Sub-Total</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {history.map((his)=> (
+                            <tr key={his?.id} onClick={()=>idProducto(his.id)}>
+                                <td>{i++}</td>
+                                <td>{his?.purchase_date}</td>
+                                <td>{his?.subtotal}</td>
+                                <td>{his?.total}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+            }
         </Container>
     )
 }

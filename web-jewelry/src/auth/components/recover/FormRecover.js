@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {useState} from "react";
 import {FormButtomSend} from "./FormButtomSend";
 import Swal from "sweetalert2";
+import {toast, Toaster} from "sonner";
 
 export const FormRecover = () => {
     const [email, setEmail] = useState("");
@@ -28,22 +29,11 @@ export const FormRecover = () => {
             ).then((data) => {
                 if (data.statusCode === 200) {
                     setState(true)
-                    Swal.fire({
-                        icon: "info",
-                        title: "Enviado",
-                        text: "Se a enviado tu nueva contraseña a tu bandeja de correo electronico",
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    toast.success('Event has been created')
                 }
                 if (data.statusCode === 400) {
                     setState(true)
-                    Swal.fire({
-                        title: "Aviso",
-                        text: "El correo no se encuentra registrado, ingrese el correo correctamente",
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    toast.warning('Event start time cannot be earlier than 8am')
                 }
             }).catch((error) => {
                     console.log(error);

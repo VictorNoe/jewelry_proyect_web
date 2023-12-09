@@ -25,6 +25,7 @@ export const useServiceShopping = () => {
         })
             .then((resp) => resp.json())
             .then((data) => {
+
             })
             .catch((err) => console.log(err));
     }
@@ -54,6 +55,7 @@ export const useServiceShopping = () => {
                     })
                         .then((resp) => resp.json())
                         .then((data) => {
+                            console.log(data)
                             if (data.statusCode === 200) {
                                 if (sendEmailService === true) {
                                     sendEmail()
@@ -66,6 +68,14 @@ export const useServiceShopping = () => {
                                     timer: 3000
                                 })
                                 navigate("/")
+                            } else {
+                                Swal.fire({
+                                    icon: "info",
+                                    title: "Proceso fallido",
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                })
                             }
                         })
                         .catch((err) => console.log(err));

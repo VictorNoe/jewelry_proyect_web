@@ -20,8 +20,18 @@ export const CartNav = () => {
                    className="text-white"
                    align={{ lg: 'end' }}>
           <NavDropdown.Item>
-              <Link to="/porfile" className="nav-link text-center">
+              <Link to="/porfile" className="nav-link text-center mb-2">
                   Mi Perfil
+              </Link>
+          </NavDropdown.Item>
+          <NavDropdown.Item>
+              <Link to="/separate" className="nav-link text-center mb-2">
+                  Apartados
+              </Link>
+          </NavDropdown.Item>
+          <NavDropdown.Item>
+              <Link to="/history" className="nav-link text-center mb-2">
+                  Historial de compras
               </Link>
           </NavDropdown.Item>
           <NavDropdown.Divider/>

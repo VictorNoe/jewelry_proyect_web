@@ -39,8 +39,8 @@ export const UserProviderCart = ({ children }) => {
                     setItem(l)
                 }
 
-                if (t > 10000) {
-                    t = (t)-((t * 5) / 100)
+                if (t > 100000) {
+                    t = (t)-((t * 0.05))
                     t = Math.trunc(t)
                     setTotal(t)
                 }

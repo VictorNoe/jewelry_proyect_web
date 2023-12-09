@@ -32,5 +32,6 @@ export const useServicesAllProducts = ( ) => {
         products,
         isLoading,
         countProducts,
+        setProducts
     }
 }

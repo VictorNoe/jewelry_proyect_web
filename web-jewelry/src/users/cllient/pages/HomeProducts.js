@@ -9,7 +9,6 @@ import {Loading} from "../componests/Loading";
 export const HomeProducts = () => {
 
     const { products, isLoading, countProducts } = useServicesAllProducts();
-    console.log(products)
 
     return (
         <>

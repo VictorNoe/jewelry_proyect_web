@@ -2,14 +2,16 @@ import {useContext} from "react";
 import {AuthContext} from "../../../auth/context/AuthContext";
 import {useNavigate} from "react-router-dom";
 import swal from "sweetalert";
+import {toast} from "sonner";
 
 export const useServicesIdPerson = () => {
 
     const navigate = useNavigate()
+
     const { login } =useContext( AuthContext )
 
-    const infoPerson  = async (email, token) => {
-        await fetch(`http://localhost:8080/api/users/${email}`, {
+    const infoPerson  = (email, token) => {
+        fetch(`http://localhost:8080/api/users/${email}`, {
             method: "GET",
             headers: {
                 "Content-type":"application/json",
@@ -19,13 +21,15 @@ export const useServicesIdPerson = () => {
             .then((resp) =>
                 resp.json())
             .then((data) => {
-                console.log(data)
                 if (data) {
                     login(email, token, data.data.rol.id);
                     navigate("/", { replace: true});
                 }
             })
-            .catch( (err) => console.log(err))
+            .catch( (err) => {
+                console.log(err)
+            })
+
     }
 
     const getLogin = async ( email, password ) => {
@@ -42,8 +46,13 @@ export const useServicesIdPerson = () => {
             .then((resp) =>
                 resp.json())
             .then((data) => {
+                console.log(data)
                 if (data) {
-                    infoPerson(email, data.jwtToken);
+                    if(data.jwtToken === "400"){
+                        toast.error('El correo o contraseña no son correctas')
+                    } else {
+                        infoPerson(email, data.jwtToken);
+                    }
                 } else {
                     swal({
                         icon: "error",

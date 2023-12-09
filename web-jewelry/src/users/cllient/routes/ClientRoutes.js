@@ -6,6 +6,7 @@ import {PorfielClient} from "../pages/PorfielClient";
 import {History} from "../pages/History";
 import {ProductPage} from "../pages/ProductPage";
 import {UserProviderCart} from "../context/userProviderCart";
+import {Reservas} from "../pages/Reservas";
 
 export const ClientRoutes = () => {
     return (
@@ -19,6 +20,7 @@ export const ClientRoutes = () => {
                 <Route path="porfile" element={<PorfielClient/>}/>
                 <Route path="cart" element={<ShoppingCart/>}/>
                 <Route path="history" element={<History/>}/>
+                <Route path="separate" element={<Reservas/>}/>
                 <Route path="*" element={<Navigate to={"/home"} />}/>
             </Routes>
         </UserProviderCart>

@@ -1,6 +1,5 @@
 import {Routes, Route, Navigate} from "react-router-dom";
 import {ClientRoutes} from "../users/cllient/routes/ClientRoutes";
-import {PrivateRouteAdmin} from "./PrivateRouteAdmin";
 import {AdminRoutes} from "../users/admin/routes/AdminRoutes";
 import {useContext} from "react";
 import {AuthContext} from "../auth/context/AuthContext";

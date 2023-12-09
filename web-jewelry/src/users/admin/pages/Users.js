@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {Container} from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import {AuthContext} from "../../../auth";
+import {users} from "../css/users.css";
 
 export const Users = () => {
     // USESTATE PARA MODAL DE AGREGAR
@@ -14,64 +16,51 @@ export const Users = () => {
     // USETATE PARA ALMACENAR INFORMACIÓN DE USUARIO SELECCIONADO
     const [usuarioSeleccionado,setUsuarioSeleccionado]=useState([]);
     //USESTATE PARA ALMACENAR USUARIOS
-    const [usuarios, setUsuarios] = useState([
-        {
-            "id": 1,
-            "name": "Omar",
-            "email": "omi@gmail.com",
-            "password": "123#$%$%&&/!|",
-            "surname": "Verdayes",
-            "second_surname": "Santander",
-            "address": "Su casa",
-            "rol": {"id": 2},
-            "status": {"id": 1}
-        },
-        {
-            "id": 2,
-            "name": "ULI",
-            "email": "uli@gmail.com",
-            "password": "456%#&(/)",
-            "surname": "garci",
-            "second_surname": "",
-            "address": "Mi casa",
-            "rol": {"id": 2},
-            "status": {"id": 2}
-        }
-    ]);
-
-    //USESTATE PARA ALMACENAR STATUS EXISTENTES DE LA BDD
-    const [status,setStatus]=useState([
-        {
-            "id":1,
-            "description":"Activo"
-        },
-        {
-            "id":2,
-            "description":"Inactivo"
-        }
-    ]);
-
+    const [usuarios, setUsuarios] = useState([]);
     //USESTATE PARA MOSTRAR CONTRASEÑA
     const [showPassword,setShowPassword]=useState(false);
-
     //USESTATE PARA CONTROLAR EL MODAL
     const [showModal,setShowModal]=useState(false);
 
-    /*useEffect(()=>{
-        //consumir servicio de consulta de usuario
-        fetch("")
-            .then((res)=>res.json())
-            .then((resp)=>setUsuarios(resp))
-            .catch((error)=>{
-                console.log("Error al consultar usuarios: ",error);
-            })
-    },[]);*/
+    const url_api_users = "http://localhost:8080/api/users/"
+    const {user} = useContext(AuthContext);
+
+    useEffect(()=>{
+        fetch(url_api_users,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setUsuarios(data.data)
+                }
+            }).catch((err)=>console.log("Error en consulta de usuarios: ",err))
+    },[]);
 
     //función para cerrar el modal
     const closeModal=()=>{
         setShowModal(false);
         setShowModalAdd(false);
         setShowPassword(false);
+        setUsuarioSeleccionado(null);
+    }
+
+    const getusersnews= ()=>{
+        fetch(url_api_users,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setUsuarios(data.data)
+                }
+            }).catch((err)=>console.log("Error en consulta de usuarios: ",err))
     }
 
     //función para abrir el modal
@@ -82,9 +71,28 @@ export const Users = () => {
     }
 
     // función para consumir servicio de editar usuario
-    const updateUser=(user)=>{
-        console.log(user)
-        closeModal()
+    const updateUser=()=>{
+        const { status, rol, password, ...userData } = usuarioSeleccionado;
+        const updatedUser = {
+            ...userData,
+            status: {id:status.id},
+            rol: {id:rol.id}
+        };
+        console.log(updatedUser)
+        /*fetch(url_api_users,{
+            method:'PUT',
+            headers:{
+                'Content-Type':'application/JSON',
+                'Authorization':`Barer ${user?.token}`
+            },
+            body:JSON.stringify(updatedUser)
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                console.log("RECIBIDO",data);
+                getusersnews();
+            }).catch((err)=>console.log("Error en updateUser(): ",err))*/
+        closeModal();
+        setUsuarioSeleccionado(null);
     }
     //función para manejar el switch del status del usuario en el modal
     const changeStatus=(e)=>{
@@ -97,7 +105,7 @@ export const Users = () => {
 
     const openModalAdd=()=>{
         setShowModalAdd(true);
-        const newuser={
+        setUsuarioSeleccionado({
             "email": "",
             "password": "",
             "name": "",
@@ -110,7 +118,27 @@ export const Users = () => {
             "status": {
                 "id": 1
             }
-        }
+        })
+    }
+
+    const adduser=()=>{
+        fetch(url_api_users,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/JSON',
+                'Authorization':`Barer ${user?.token}`
+            },
+            body:JSON.stringify(usuarioSeleccionado)
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+            if(data.statusCode===200){
+                console.log("EXITO")
+                getusersnews()
+            }else if(data.error===true){
+                console.log("USUARIO YA EXISTE");
+            }
+        }).catch((err)=>console.log("Error al agregar en adduser(): ",err))
+        setShowModalAdd(false);
     }
 
     return (
@@ -140,9 +168,7 @@ export const Users = () => {
                             <td>{usuario.name} {usuario.surname} {usuario.second_surname}</td>
                             <td>{usuario.email}</td>
                             <td>{usuario.address}</td>
-                            <td>
-                                {status.find((statu)=>statu.id===usuario.status?.id)?.description || 'Status desconocido'}
-                            </td>
+                            {usuario.status.description==="Activo"?(<td><div className="circle-green"></div></td>):(<td><div className="circle-red"></div></td>)}
                             <td>
                                 <button onClick={()=>openModal('Editar usuario',usuario)} className='btn btn-primary'>Editar</button>
                             </td>
@@ -175,6 +201,7 @@ export const Users = () => {
                         <Form.Label>Correo electrónico</Form.Label>
                         <Form.Control type='email' value={usuarioSeleccionado?.email || ''}  onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,email:e.target.value})}/>
                         <br />
+                        {/*
                         <Form.Label>Contraseña</Form.Label>
                         <div style={{display:'flex'}}>
                             <Form.Control type={showPassword?'text':'password'} value={usuarioSeleccionado?.password || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,password:e.target.value})}/>
@@ -183,6 +210,7 @@ export const Users = () => {
                             </span>
                         </div>
                         <br />
+                        */}
                         <Form.Label>Dirección</Form.Label>
                         <Form.Control type='text' value={usuarioSeleccionado?.address || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,address:e.target.value})}></Form.Control>
                     </div>
@@ -191,7 +219,7 @@ export const Users = () => {
                     <Button variant="secondary" onClick={closeModal}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=>updateUser(usuarioSeleccionado)}>
+                    <Button variant="primary" onClick={()=>updateUser()}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>
@@ -200,7 +228,7 @@ export const Users = () => {
             {/* MODAL PARA AGREGAR USUARIO */}
             <Modal style={{ margin: 'auto', top: '5vh',height:'90vh'}} show={showModalAdd} onHide={closeModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{titleModal}</Modal.Title>
+                    <Modal.Title>Agregar usuario</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div>
@@ -237,7 +265,7 @@ export const Users = () => {
                     <Button variant="secondary" onClick={closeModal}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=>updateUser(usuarioSeleccionado)}>
+                    <Button variant="primary" onClick={()=>adduser()}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>

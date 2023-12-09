@@ -1,155 +1,87 @@
-import React, { useEffect,useState } from 'react'
+import React, {useContext,useEffect,useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Col, Container, Image, Row } from "react-bootstrap";
+import { Col, Container} from "react-bootstrap";
+import {AuthContext} from "../../../auth";
+import axios from 'axios';
 
 export const AdminProducts = () => {
-    // USESTATE PARA ALMACENAR LAS CATEGORIAS
-    const [categorias,setCategorias]=useState([
-        {
-            "id":1,
-            "description":"Anillo"
-        },
-        {
-            "id":2,
-            "description":"Collar"
-        }
-    ]);
+    const [show, setShow] = useState(false);
+    // usestate para almacenar las categorias
+    const [categorias,setCategorias]=useState([]);
 
-    //USESTATE PARA ESTADO DE MODAL
+    // usestate para almacenar los proveedores
+    const [proveedores,setProveedores]=useState([]);
+
+    // usestate para estado de modal
     const [showModal,setShowModal]=useState(false);
 
     // USESTATE PARA MODIFICAR EL TITULO DEL MODAL
     const [titleModal, setTitleModal] = useState('')
 
-    //USESTATE PARA ALMACENAR LOS PROVEDORES
-    const [proveedores, setProveedores]=useState([
-        {
-            "id":1,
-            "name": "proveedor 1",
-            "rfc": "RFC123456789",
-            "physical_address": "Dirección física del proveedor",
-            "branch_address": "Dirección secundaria del proveedor",
-            "email": "proveedor1@example.com",
-            "phone_number": "1234567890",
-            "status": {
-                "id": 1
-            }
-        },
-        {
-            "id":2,
-            "name": "proveedor 2",
-            "rfc": "RFC123456789",
-            "physical_address": "Dirección física del proveedor",
-            "branch_address": "Dirección secundaria del proveedor",
-            "email": "proveedor2@example.com",
-            "phone_number": "1234567890",
-            "status": {
-                "id": 1
-            }
-        }
-    ]);
-
     // USESTATE PARA ALMACENAR LA INFORMACIÓN DEL PRODUCTO SELECIONADO
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-    //USESTATE PARA ALMACENAR LOS ESTATUS EXISTENTES EN LA BASE DE DATOS
-    const [status,setStatus]=useState([
-        {
-            "id":1,
-            "description":"Activo"
-        },
-        {
-            "id":2,
-            "description":"Inactivo"
-        }
-    ]);
-
     //USESTATE PARA ALMACENAR PRODUCTOS
-    const [productos,setProductos]=useState([
-        {
-            "id":1,
-            "name": "Prueba1",
-            "description": "Producto 1",
-            "stock": 100,
-            "imageArchivo": "https://m.media-amazon.com/images/I/61gBBKP+4mL._AC_SX679_.jpg",
-            "price": 99,
-            "discount_price": 0,
-            "category": {
-                "id": 1
-            },
-            "status": {
-                "id": 1
-            },
-            "suppliers": {
-                "id": 1
-            }
-        },
-        {
-            "id":2,
-            "name": "Prueba2",
-            "description": "Producto 2",
-            "stock": 100,
-            "imageArchivo": "https://m.media-amazon.com/images/I/61h+Y9mQzgL._AC_SX679_.jpg",
-            "price": 99,
-            "discount_price": 0.3,
-            "category": {
-                "id": 1
-            },
-            "status": {
-                "id": 2
-            },
-            "suppliers": {
-                "id": 1
-            }
-        },
-        {
-            "id":3,
-            "name": "Prueba3",
-            "description": "Producto 3",
-            "stock": 100,
-            "imageArchivo": "https://m.media-amazon.com/images/I/61sM50EV8zL._AC_SY695_.jpg",
-            "price": 99,
-            "discount_price": 0.5,
-            "category": {
-                "id": 2
-            },
-            "status": {
-                "id": 1
-            },
-            "suppliers": {
-                "id": 2
-            }
-        }
-    ]);
+    const [productos,setProductos]=useState([]);
 
-    /*useEffect(()=>{
-        {/!* consulta al servicio de productos *!/}
-        fetch("https://jsonplaceholder.typicode.com/users")
-            .then((res)=>res.json())
-            .then((resp)=>{
-                setProductos(resp)
-            }).catch((error)=>{
-                console.log("Error al consultar productos: ",error)
-        })
+    // usestate para modal de eliminar
+    const [showModalDelete, setShowModalDelete]=useState(false);
 
-        {/!* consulta al servicio de categorias *!/}
-        fetch("https://random-data-api.com/api/v2/appliances?size=8")
-            .then((res)=>
-            res.json()
-            ).then((resp)=>{
-                setCategorias(resp)
-        }).catch((error)=>{
-            console.log("Error al consultar categorias de productos",error);
-        })
-    },[])*/
+    const url_api_products='http://localhost:8080/api/products/all/';
+    const url_api_category='http://localhost:8080/api/category/';
+    const url_api_productsPost='http://localhost:8080/api/products/';
+    const url_api_suppliers="http://localhost:8080/api/suppliers/"
+    const {user} = useContext(AuthContext);
+
+    useEffect(()=>{
+        fetch(url_api_products,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setProductos(data.data);
+                }
+            }).catch((err)=>console.log("Error: ",err));
+
+        fetch(url_api_suppliers,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setProveedores(data.data);
+                }
+            }).catch((err)=>console.log("Error: ",err));
+
+        fetch(url_api_category,{
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setCategorias(data.data);
+                }
+            }).catch((err)=>console.log("Error: ",err));
+    },[])
 
 
     const handleClose=()=>{
         setShowModal(false);
         setProductoSeleccionado(null);
+        setShowModalDelete(false);
     }
     const handleShow = (title, producto = null) => {
         setShowModal(true);
@@ -159,51 +91,47 @@ export const AdminProducts = () => {
             setProductoSeleccionado(producto);
         } else {
             setProductoSeleccionado({
-                id: '', // Genera un ID único o deja vacío para un nuevo producto
                 name: '',
                 description: '',
                 stock: 0,
                 price: 0,
                 discount_price: 0,
                 category: {
-                    id: '', // ID de la categoría por defecto
+                    id: 1 // ID de la categoría por defecto
                 },
                 status: {
                     id: 1, // ID de estatus por defecto
                 },
                 suppliers: {
-                    id: '', // ID del proveedor por defecto
+                    id: 1,
                 },
-                imageArchivo: '', // URL por defecto de la imagen, si es necesario
+                image: '',
             });
         }
     };
 
-    {/* funcion que maneja los cambios de la CATEGORIA del producto
-        por si se llega a cambiar */}
-    const categoryChange=(e)=>{
-        {/* se almacena la nueva categoria */}
-        const newcategoria = e.target.value;
-        {/* se setea unicamente la nueva categoria*/}
-        setProductoSeleccionado({
-            ...productoSeleccionado,
-            category:{id:newcategoria},
-        })
-    }
 
-    {/* función que maneja los cambios de los PROVEEDORES del producto
-        por si se llega a cambiar*/}
-    const changeSupplier=(e)=>{
-        const newProveedor = e.target.value;
-        setProductoSeleccionado({
-            ...productoSeleccionado,
-            suppliers:{id:newProveedor}
-        })
-    }
-
-    {/* funcion para consumo de servicio de ACTUALIZACIÓN*/}
     const saveupdate=()=>{
-        console.log(productoSeleccionado)
+        let method='';
+        if(titleModal==="Agregar producto"){
+            method='POST';
+        }else{
+            method='PUT'
+        }
+        fetch(url_api_productsPost,{
+            method:method,
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            },
+            body:JSON.stringify(productoSeleccionado)
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    console.log("EXITO")
+                    getproducts()
+                }
+            }).catch((err)=>console.log("Error peticion en saveupdate(): ",err));
     }
 
     {/* función para manejar el switch del estatus del producto en el modal*/}
@@ -215,25 +143,60 @@ export const AdminProducts = () => {
         }))
     }
 
+    // funcion para obtener productos actualizados despues de una operación
+    const getproducts=()=>{
+        fetch(url_api_products,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data.statusCode===200){
+                    setProductos(data.data);
+                }
+            }).catch((err)=>console.log("Error: ",err));
+    }
+
+    // FUNCIÓN PARA CARGAR IMAGEN
+    const fileChange=async (e)=>{
+        const file = e.target.files[0];
+        const data = new FormData();
+
+        data.append("file",file);
+        data.append("upload_preset","PRESET_SIVEJO");
+
+        const response =  await axios.post("https://api.cloudinary.com/v1_1/dzcgnz5tp/image/upload",data);
+        console.log("RECIBIDO: ",response.data);
+        setProductoSeleccionado({
+            ...productoSeleccionado,
+            image:response.data.secure_url
+        })
+    }
+
     return (
         <Container>
             <div style={{ padding: '25px', textAlign: 'center' }}>
                 <h1>Inventario</h1>
             </div>
             <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-                <button onClick={() => handleShow('Agregar proveedor')} className='btn btn-success'>Agregar</button>
+                <button onClick={() => handleShow('Agregar producto')} className='btn btn-success'>Agregar</button>
             </div>
             {/* TABLA DE PRODUCTOS EN EL INVENTARIO */}
             <div style={{ overflowY: 'scroll', height: '400px' }}>
                 <Table>
                     <thead>
                     <tr>
-                        <th style={{ backgroundColor: '#D1D1D1' }}>#</th>
+                        <th style={{ backgroundColor: '#D1D1D1'}}>#</th>
+                        <th style={{ backgroundColor: '#D1D1D1',textAlign:'center' }}>Imagen</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Nombre</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Descripción</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Stock</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Precio</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Descuento</th>
+                        <th style={{ backgroundColor: '#D1D1D1' }}>Categoría</th>
+                        <th style={{ backgroundColor: '#D1D1D1' }}>Proveedor</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Estatus</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Acciones</th>
                     </tr>
@@ -242,14 +205,21 @@ export const AdminProducts = () => {
                     {productos.map(producto=>(
                         <tr>
                             <td>{producto.id}</td>
+                            <td style={{textAlign: 'center', verticalAlign: 'middle'}}>
+                                <img
+                                    src={producto.image}
+                                    alt={`Imagen de ${producto.name}`}
+                                    style={{ width: '110px', height: '100px' }}
+                                />
+                            </td>
                             <td>{producto.name}</td>
                             <td>{producto.description}</td>
                             <td>{producto.stock}</td>
                             <td>{producto.price}</td>
                             <td>{producto.discount_price}</td>
-                            <td>
-                                {status.find((statu)=>statu.id===producto.status?.id)?.description || 'Status desconocido'}
-                            </td>
+                            <td>{producto.category.description}</td>
+                            <td>{producto.suppliers.name}</td>
+                            <td>{producto.status.description}</td>
                             <td>
                                 <button className='btn btn-primary' onClick={()=>handleShow("Editar información de producto",producto)}>Editar</button>
                             </td>
@@ -273,48 +243,56 @@ export const AdminProducts = () => {
                         <Form.Control type="text" value={productoSeleccionado?.description || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,description:e.target.value})}/>
                         <br />
                         <Form.Label>Stock</Form.Label>
-                        <Form.Control type='number' value={productoSeleccionado?.stock || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,stock:parseInt(e.target.value)})}/>
+                        <Form.Control type='number' value={productoSeleccionado?.stock || ''} onChange={(e)=>{const inputstock = parseInt(e.target.value);if(inputstock>=0 || e.target.value==='') setProductoSeleccionado({...productoSeleccionado,stock:parseInt(e.target.value)})}}/>
                         <br />
                         <Form.Label>Precio</Form.Label>
-                        <Form.Control type='number' value={productoSeleccionado?.price || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,price:parseFloat(e.target.value)})}/>
+                        <Form.Control type='number' value={productoSeleccionado?.price || ''} onChange={(e)=> {const inputprice = parseFloat(e.target.value); if (inputprice >= 0 || e.target.value === '') {setProductoSeleccionado({...productoSeleccionado, price: parseFloat(e.target.value)})}}}/>
                         <br />
                         <Form.Label>Descuento</Form.Label>
-                        <Form.Control type='number' value={productoSeleccionado?.discount_price || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,discount_price:parseFloat(e.target.value)})}/>
+                        <Form.Control type='number' value={productoSeleccionado?.discount_price || ''} onChange={(e)=>{const inputdiscount=parseFloat(e.target.value); if(inputdiscount>=0 || e.target.value===''){setProductoSeleccionado({...productoSeleccionado,discount_price:parseFloat(e.target.value)})}}}/>
                         <br />
-                        {/*select de categoria*/}
-                        <Form.Label>Categoria</Form.Label>
-                        <Form.Select onChange={(e)=>categoryChange(e)} value={productoSeleccionado?.category?.id || ''}>
-                            <option value="">Seleccione una opción</option>
-                            {/* mapeo de categorias*/}
-                            {categorias.map((categoria )=>(
-                                <option key={categoria.id} value={categoria.id}>
-                                    {categoria.description}
-                                </option>
-                            ))}
-                        </Form.Select>
-                        <br />
-                        <Form.Label>Proveedor</Form.Label>
-                        <Form.Select onChange={(e)=>changeSupplier(e)} value={productoSeleccionado?.suppliers?.id || ''}>
-                            <option value="">Seleccione una opción</option>
-                            {/* mapeo de proveedores*/}
-                                {proveedores.map((proveedor)=>(
-                                    <option key={proveedor.id} value={proveedor.id}>
-                                        {proveedor.name}
-                                    </option>
-                                ))}
-                        </Form.Select>
-                        <br/>
+                        {titleModal==='Agregar producto'?(
+                            <div>
+                                <Form.Label>Categoría</Form.Label>
+                                <Form.Control as="select"  onChange={(e) => {const categoryId = parseInt(e.target.value, 10); setProductoSeleccionado(prevState => ({...prevState, category: {...prevState.category, id: categoryId}}));}}>
+                                    {categorias.map((categoria) => (
+                                        <option key={categoria?.id} value={categoria.id}>
+                                            {categoria?.description}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                                <br />
+                                <Form.Label>Proveedor</Form.Label>
+                                <Form.Control as="select" onChange={(e)=>{const supplierId=parseInt(e.target.value, 10); setProductoSeleccionado(prevState=>({...prevState,suppliers:{...prevState.suppliers,id:supplierId}}))}} >
+                                    {proveedores.map((proveedor)=>(
+                                        <option value={proveedor.id}>{proveedor.name}</option>
+                                    ))}
+                                </Form.Control>
+                                <br/>
+                            </div>
+                        ):(
+                            <div>
+                                <Form.Label>Categoría</Form.Label>
+                                <Form.Control disabled='true' type='text' value={productoSeleccionado?.category?.description}/>
+                                <br />
+                                <Form.Label>Proveedor</Form.Label>
+                                <Form.Control disabled='true' type='text' value={productoSeleccionado?.suppliers?.name}/>
+                                <br/>
+                            </div>
+                        )}
+                        {}
+
                         <Form.Label>Estatus</Form.Label>
                         <Form.Switch checked={!productoSeleccionado || productoSeleccionado.status.id === 1} onChange={changeStatus} label={productoSeleccionado?.status?.id===1?'Activo':'Inactivo'}/>
                         <br/>
                         <Form.Group controlId="formFile" className="mb-3">
                             <Form.Label>Imagen</Form.Label>
-                            <Form.Control type="file" />
+                            <Form.Control type="file" onChange={fileChange}/>
                         </Form.Group>
                         <div style={{display:'flex',justifyContent:'center'}}>
                             <Col xs={6} md={4}>
-                                {productoSeleccionado?.imageArchivo && (
-                                    <Image style={{maxWidth:"100%"}} src={productoSeleccionado.imageArchivo} rounded />
+                                {productoSeleccionado?.image && (
+                                    <img style={{maxWidth:"100%"}} src={productoSeleccionado.image} alt='Vista previa' rounded />
                                 )}
                             </Col>
                         </div>
@@ -329,7 +307,7 @@ export const AdminProducts = () => {
                         handleClose();
                         saveupdate();
                     }}>
-                        Guardar cambios
+                        Guardar
                     </Button>
                 </Modal.Footer>
             </Modal>

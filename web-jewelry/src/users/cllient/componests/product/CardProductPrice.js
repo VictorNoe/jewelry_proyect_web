@@ -5,17 +5,46 @@ import {useContext, useState} from "react";
 import {AuthContext} from "../../../../auth/context/AuthContext";
 import {useServicesAddCart} from "../../hooks/useServicesAddCart";
 import Swal from "sweetalert2";
+import {useServiceApartados} from "../../hooks/useServiceApartados";
 
 export const CardProductPrice = () => {
 
     const {id} = useParams();
     const { product} = useServicesIdProduct(id);
-    const { user } = useContext( AuthContext )
+    const { user } = useContext( AuthContext );
     const [counterProduct, setCounterProduct] = useState(1);
-    const { addProduct, buyOneProduct } = useServicesAddCart()
-    const navigate = useNavigate()
+    const { addProduct, buyOneProduct,status } = useServicesAddCart();
+    const { insertPartado } = useServiceApartados();
+    const navigate = useNavigate();
 
-    
+    const apart = () => {
+        Swal.fire({
+            title: "Aviso",
+            text: "¿Seguro que quieres apartar de este producto?",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#882D38",
+            confirmButtonText: "realizar apartado",
+            cancelButtonText: "cancelar",
+            preConfirm: async () => {
+                if (user) {
+                    insertPartado(id)
+                } else {
+                    Swal.fire({
+                        icon: "question",
+                        title: "¿Aun no tienes cuenta?",
+                        text: "¡Crea una cuenta para comprar ahora mismo!",
+                        value: navigate('/login/register', {replace: true}),
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+
+        });
+    }
+
     const ventaOne = () => {
         Swal.fire({
             title: "Aviso",
@@ -26,10 +55,21 @@ export const CardProductPrice = () => {
             confirmButtonText: "realizar compra",
             cancelButtonText: "cancelar",
             preConfirm: async () => {
-                if (product?.discount_price > 0) {
-                    buyOneProduct(id, product?.discount_price);
+                if (user) {
+                    if (product?.discount_price > 0) {
+                        buyOneProduct(id, product?.discount_price);
+                    } else {
+                        buyOneProduct(id, product?.price);
+                    }
                 } else {
-                    buyOneProduct(id, product?.price);
+                    Swal.fire({
+                        icon: "question",
+                        title: "¿Aun no tienes cuenta?",
+                        text: "¡Crea una cuenta para comprar ahora mismo!",
+                        value: navigate('/login/register', {replace: true}),
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
                 }
             },
             allowOutsideClick: () => !Swal.isLoading()
@@ -119,7 +159,7 @@ export const CardProductPrice = () => {
                 <Row className="text-center mt-4">
                     <Col xs={12}>
                         <Button
-                            size="lg"
+                            size="sm"
                             type="submit"
                             className="mt-3"
                             style={{background: "#882D38", borderColor: "#882D38", width: "100%"}}
@@ -130,7 +170,7 @@ export const CardProductPrice = () => {
                     </Col>
                     <Col xs={12}>
                         <Button
-                            size="lg"
+                            size="sm"
                             type="submit"
                             className="mt-3"
                             style={{background: "#BC9709", borderColor: "#BC9709", width: "100%"}}
@@ -138,6 +178,21 @@ export const CardProductPrice = () => {
                         >
                             Agregar al carrito
                         </Button>
+                    </Col>
+                    <Col xs={12}>
+                        {
+                            status
+                            &&
+                            <Button
+                                size="sm"
+                                type="submit"
+                                className="mt-3"
+                                style={{background: "#16a6e5", borderColor: "#16a6e5", width: "100%"}}
+                                onClick={apart}
+                            >
+                                Apartar joya
+                            </Button>
+                        }
                     </Col>
                 </Row>
             </Card.Body>
