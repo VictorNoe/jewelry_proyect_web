@@ -70,23 +70,27 @@ export const Users = () => {
             status: {id:status?.id},
             rol: {id:rol?.id}
         };
-        console.log(updatedUser)
-        fetch(url_api_users,{
-            method:'PUT',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':`Bearer ${user?.token}`
-            },
-            body:JSON.stringify(updatedUser)
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-                if(data?.statusCode===200){
+        if(updatedUser?.name==="" || updatedUser?.surname==="" || updatedUser?.second_surname==="" || updatedUser?.address===""){
+            toast.info("Llena todos los campos para actualizar el usuario")
+        }else{
+            fetch(url_api_users,{
+                method:'PUT',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${user?.token}`
+                },
+                body:JSON.stringify(updatedUser)
+            }).then((resp)=>resp.json())
+                .then((data)=>{
+                    if(data?.statusCode===200){
+                        toast.success("usuario actualizado")
+                        getusersnews();
+                    }
+                }).catch((err)=>console.log("Error en updateUser(): ",err))
+            closeModal();
+            setUsuarioSeleccionado(null);
+        }
 
-                    getusersnews();
-                }
-            }).catch((err)=>console.log("Error en updateUser(): ",err))
-        closeModal();
-        setUsuarioSeleccionado(null);
     }
     //función para manejar el switch del status del usuario en el modal
     const changeStatus=(e)=>{
@@ -116,22 +120,28 @@ export const Users = () => {
     }
 
     const adduser=()=>{
-        fetch(url_api_users,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/JSON',
-                'Authorization':`Barer ${user?.token}`
-            },
-            body:JSON.stringify(usuarioSeleccionado)
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-            if(data?.statusCode===200){
-                getusersnews()
-            }else if(data?.error===true){
-                console.log("USUARIO YA EXISTE");
-            }
-        }).catch((err)=>console.log("Error al agregar en adduser(): ",err))
-        setShowModalAdd(false);
+        if(usuarioSeleccionado?.name==="" || usuarioSeleccionado?.surname==="" || usuarioSeleccionado?.password==="" || usuarioSeleccionado?.email==="" || usuarioSeleccionado?.address==="" || usuarioSeleccionado?.second_surname===""){
+            toast.info("Llena todos los campos para realizar el registro");
+        }else{
+            fetch(url_api_users,{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/JSON',
+                    'Authorization':`Barer ${user?.token}`
+                },
+                body:JSON.stringify(usuarioSeleccionado)
+            }).then((resp)=>resp.json())
+                .then((data)=>{
+                    if(data?.statusCode===200){
+                        toast.success("Usuario registrado");
+                        getusersnews()
+                    }else if(data?.error===true){
+                        toast.error("Usuario ya existe, no se puede registrar");
+                        console.log("USUARIO YA EXISTE");
+                    }
+                }).catch((err)=>console.log("Error al agregar en adduser(): ",err))
+            setShowModalAdd(false);
+        }
     }
 
     return (
@@ -229,9 +239,8 @@ export const Users = () => {
                         <Form.Label>Apellido materno</Form.Label>
                         <Form.Control type='text' value={usuarioSeleccionado?.second_surname || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,second_surname:e.target.value})}/>
                         <br />
-                        <FloatingLabel label="Correo electrónico">
-                            <Form.Control type="email" value={usuarioSeleccionado?.email} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,email:e.target.value})}/>
-                        </FloatingLabel>
+                        <Form.Label>Correo</Form.Label>
+                        <Form.Control type="email" value={usuarioSeleccionado?.email} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,email:e.target.value})}/>
                         <br />
                         <Form.Label>Contraseña</Form.Label>
                         <InputGroup>

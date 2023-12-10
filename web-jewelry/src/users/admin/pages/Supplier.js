@@ -40,28 +40,38 @@ export const Supplier = () => {
 
     // función para actualizar proveedor
     const saveupdate=()=>{
-        const {status,...supplierdata}=proveedorSeleccionado
-        const updateSupplier ={
-            ...supplierdata,
-            status:{id:status?.id}
-        }
-        fetch(url_api,{
-            method:'PUT',
-            headers:{
-                'Content-Type':'application/JSON',
-                'Authorization':`Bearer ${user?.token}`
-            },
-            body:JSON.stringify(updateSupplier)
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-                if(data?.statusCode===200){
-                    toast.success('Proveedor actualizado')
-                    getnewsupplier()
-                }else if(data?.error===true){
-                    toast.error("Error al actualizar");
-                    console.log("Error en saveupdate():")
-                }
+        if(setProveedorSeleccionado?.name==="" || proveedorSeleccionado?.rfc==="" || proveedorSeleccionado?.physical_address==="" || proveedorSeleccionado?.email==="" || proveedorSeleccionado?.phone_number===""){
+            toast.info("Llene los campos obligatorios marcados con *");
+        }else{
+            const {status,...supplierdata}=proveedorSeleccionado
+            const updateSupplier ={
+                ...supplierdata,
+                status:{id:status?.id}
+            }
+            fetch(url_api,{
+                method:'PUT',
+                headers:{
+                    'Content-Type':'application/JSON',
+                    'Authorization':`Bearer ${user?.token}`
+                },
+                body:JSON.stringify(updateSupplier)
+            }).then((resp)=>resp.json())
+                .then((data)=>{
+                    if(data?.statusCode===200){
+                        toast.success('Proveedor actualizado')
+                        getnewsupplier()
+                        handleClose();
+                    }else if(data?.error===true){
+                        toast.error("Error al actualizar");
+                        console.log("Error en saveupdate():")
+                    }
+                }).catch((err)=> {
+                handleClose();
+                toast.error("Error al actualizar proveedor");
+                console.log("Error: ", err)
             })
+        }
+
     }
 
     const getnewsupplier=()=>{
@@ -98,23 +108,33 @@ export const Supplier = () => {
 
     // función para registrar proveedor
     const savenew=()=>{
-        fetch(url_api,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':`Bearer ${user?.token}`
-            },
-            body:JSON.stringify(proveedorSeleccionado)
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-                if(data?.statusCode===200){
-                    toast.success('Proveedor registrado')
-                    getnewsupplier()
-                }else if(data?.error===true){
-                    toast.error('Error al registrar proveedor')
-                    console.log("Error en savenew()")
-                }
-            }).catch((err)=>console.log("Error: ",err))
+        if(setProveedorSeleccionado?.name==="" || proveedorSeleccionado?.rfc==="" || proveedorSeleccionado?.physical_address==="" || proveedorSeleccionado?.email==="" || proveedorSeleccionado?.phone_number===""){
+            toast.info("Llene todos los campos obligatorios marcados con *");
+        }else {
+            fetch(url_api, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
+                body: JSON.stringify(proveedorSeleccionado)
+            }).then((resp) => resp.json())
+                .then((data) => {
+                    if (data?.statusCode === 200) {
+                        toast.success('Proveedor registrado')
+                        getnewsupplier()
+                        handleClose();
+                    } else if (data?.error === true) {
+                        toast.error('Error al registrar proveedor')
+                        console.log("Error en savenew()")
+                        handleClose();
+                    }
+                }).catch((err) => {
+                    toast.error("Error en el servidor")
+                    handleClose();
+                    console.log("Error: ", err)
+            })
+        }
     }
 
     //función para manejar el switch del status del proveedor en el modal
@@ -181,22 +201,22 @@ export const Supplier = () => {
                         <div style={{display:'flex',justifyContent:'end'}}>
                             <Form.Switch checked={!proveedorSeleccionado || proveedorSeleccionado?.status?.id ===1} onChange={changeStatus} label={proveedorSeleccionado?.status?.id===1?'Proveedor Activo':'Proveedor Inactivo'}/>
                         </div>
-                        <Form.Label>Nombre del proveedor</Form.Label>
+                        <Form.Label>Nombre del proveedor*</Form.Label>
                         <Form.Control required type='text' value={proveedorSeleccionado?.name || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,name:e.target.value})}/>
                         <br />
-                        <Form.Label>Número de teléfono</Form.Label>
+                        <Form.Label>Número de teléfono*</Form.Label>
                         <Form.Control required type="tel" value={proveedorSeleccionado?.phone_number || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,phone_number:e.target.value})}/>
                         <br />
-                        <Form.Label>Correo electrónico</Form.Label>
+                        <Form.Label>Correo electrónico*</Form.Label>
                         <Form.Control required type='email' value={proveedorSeleccionado?.email || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,email:e.target.value})}/>
                         <br />
-                        <Form.Label>RFC</Form.Label>
+                        <Form.Label>RFC*</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.rfc || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,rfc:e.target.value})}/>
                         <br />
-                        <Form.Label>Dirección fisica del proveedor</Form.Label>
+                        <Form.Label>Dirección fisica del proveedor*</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.physical_address || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,physical_address:e.target.value})}/>
                         <br />
-                        <Form.Label>Dirección secundaria</Form.Label>
+                        <Form.Label>Dirreción de la empresa</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.branch_address || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,branch_address:e.target.value})}/>
                         <br />
                     </div>
@@ -205,10 +225,7 @@ export const Supplier = () => {
                     <Button variant="secondary" onClick={handleClose}>
                         Cancelar
                     </Button>
-                    <Button onClick={()=>{
-                        handleClose();
-                        saveupdate();
-                    }} style={{ backgroundColor: '#882d38'}}>
+                    <Button onClick={()=>{saveupdate();}} style={{ backgroundColor: '#882d38'}}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>
@@ -224,22 +241,22 @@ export const Supplier = () => {
                         <div style={{display:'flex',justifyContent:'end'}}>
                             <Form.Switch checked={!proveedorSeleccionado || proveedorSeleccionado?.status?.id ===1} onChange={changeStatus} label={proveedorSeleccionado?.status?.id===1?'Activo':'Inactivo'}/>
                         </div>
-                        <Form.Label>Nombre del proveedor</Form.Label>
+                        <Form.Label>Nombre del proveedor*</Form.Label>
                         <Form.Control required type='text' value={proveedorSeleccionado?.name || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,name:e.target.value})}/>
                         <br />
-                        <Form.Label>Número de teléfono</Form.Label>
+                        <Form.Label>Número de teléfono*</Form.Label>
                         <Form.Control required type="tel" value={proveedorSeleccionado?.phone_number || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,phone_number:e.target.value})}/>
                         <br />
-                        <Form.Label>Correo electrónico</Form.Label>
+                        <Form.Label>Correo electrónico*</Form.Label>
                         <Form.Control type='email' value={proveedorSeleccionado?.email || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,email:e.target.value})}/>
                         <br />
-                        <Form.Label>RFC</Form.Label>
+                        <Form.Label>RFC*</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.rfc || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,rfc:e.target.value})}/>
                         <br />
                         <Form.Label>Dirreción de la empresa</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.branch_address || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,branch_address:e.target.value})}/>
                         <br />
-                        <Form.Label>Dirección del negocio</Form.Label>
+                        <Form.Label>Dirección fisica del proveedor*</Form.Label>
                         <Form.Control type='text' value={proveedorSeleccionado?.physical_address || ''} onChange={(e)=>setProveedorSeleccionado({...proveedorSeleccionado,physical_address:e.target.value})}/>
                         <br />
 
@@ -249,10 +266,7 @@ export const Supplier = () => {
                     <Button variant="secondary" onClick={handleClose}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=>{
-                        handleClose();
-                        savenew()
-                    }} style={{ backgroundColor: '#882d38'}}>
+                    <Button variant="primary" onClick={()=>{savenew()}} style={{ backgroundColor: '#882d38'}}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>

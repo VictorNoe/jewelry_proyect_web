@@ -110,7 +110,7 @@ export const AdminProducts = () => {
             setProductoSeleccionado({
                 name: '',
                 description: '',
-                stock: 0,
+                stock: 1,
                 price: 0,
                 discount_price: 0,
                 category: {
@@ -128,29 +128,47 @@ export const AdminProducts = () => {
     };
 
 
-    const saveupdate=()=>{
+    // función para agregar o actualizar producto
+    const saveupdate= async ()=>{
         let method='';
         if(titleModal==="Agregar producto"){
             method='POST';
         }else{
             method='PUT'
         }
-        fetch(url_api_productsPost,{
-            method:method,
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':`Bearer ${user?.token}`
-            },
-            body:JSON.stringify(productoSeleccionado)
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-                if(data?.statusCode===200){
-                    titleModal==="Agregar producto"?toast.success('Producto registrado'):toast.success('Producto actualizado')
-                    getproducts()
-                }else if(data?.error===true){
-                    titleModal==="Agregar producto"?toast.error("Error al registrar"):toast.error("Error al actualizar");
-                }
-            }).catch((err)=>console.log("Error peticion en saveupdate(): ",err));
+        if(productoSeleccionado?.name==="" || productoSeleccionado?.description===""){
+            toast.info("Llenar los campos obligatorios marcados con *");
+        }else{
+            if(isNaN(productoSeleccionado?.stock)) {
+                toast.warning("El stock debe ser numérico");
+            }else if(isNaN(productoSeleccionado?.price) || productoSeleccionado?.price===0){
+                toast.warning("El precio del producto debe ser numérico")
+            }else{
+                const updatedProducto = {
+                    ...productoSeleccionado,
+                    discount_price: isNaN(productoSeleccionado?.discount_price) ? 0 : productoSeleccionado?.discount_price
+                };
+
+                fetch(url_api_productsPost,{
+                    method:method,
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':`Bearer ${user?.token}`
+                    },
+                    body:JSON.stringify(updatedProducto)
+                }).then((resp)=>resp.json())
+                    .then((data)=>{
+                        if(data?.statusCode===200){
+                            titleModal==="Agregar producto"?toast.success('Producto registrado'):toast.success('Producto actualizado')
+                            getproducts()
+                            handleClose();
+                        }else if(data?.error===true){
+                            titleModal==="Agregar producto"?toast.error("Error al registrar"):toast.error("Error al actualizar");
+                            handleClose();
+                        }
+                    }).catch((err)=>console.log("Error peticion en saveupdate(): ",err));
+            }
+        }
     }
 
     {/* función para manejar el switch del estatus del producto en el modal*/}
@@ -243,16 +261,16 @@ export const AdminProducts = () => {
                             <Form.Switch checked={!productoSeleccionado || productoSeleccionado?.status?.id === 1} onChange={changeStatus} label={productoSeleccionado?.status?.id===1?'Producto Activo':'Producto Inactivo'}/>
                             <br/>
                         </div>
-                        <Form.Label>Nombre del producto</Form.Label>
+                        <Form.Label>Nombre del producto*</Form.Label>
                         <Form.Control type='text' value={productoSeleccionado?.name || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,name:e.target.value})}/>
                         <br />
-                        <Form.Label>Descripción</Form.Label>
+                        <Form.Label>Descripción*</Form.Label>
                         <Form.Control type="text" value={productoSeleccionado?.description || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,description:e.target.value})}/>
                         <br/>
-                        <Form.Label>Stock</Form.Label>
+                        <Form.Label>Stock*</Form.Label>
                         <Form.Control type='number' value={productoSeleccionado?.stock || ''} onChange={(e)=>{const inputstock = parseInt(e.target.value);if(inputstock>=0 || e.target.value==='') setProductoSeleccionado({...productoSeleccionado,stock:parseInt(e.target.value)})}}/>
                         <br/>
-                        <Form.Label>Precio</Form.Label>
+                        <Form.Label>Precio*</Form.Label>
                         <InputGroup>
                             <InputGroup.Text id="btnGroupAddon">$</InputGroup.Text>
                             <Form.Control type='number' value={productoSeleccionado?.price || ''} onChange={(e)=> {const inputprice = parseFloat(e.target.value); if (inputprice >= 0 || e.target.value === '') {setProductoSeleccionado({...productoSeleccionado, price: parseFloat(e.target.value)})}}}/>
@@ -268,7 +286,7 @@ export const AdminProducts = () => {
                         <br />
                         {titleModal==='Agregar producto'?(
                             <div>
-                                <Form.Label>Categoría</Form.Label>
+                                <Form.Label>Categoría*</Form.Label>
                                 <Form.Control as="select"  onChange={(e) => {const categoryId = parseInt(e.target.value, 10); setProductoSeleccionado(prevState => ({...prevState, category: {...prevState?.category, id: categoryId}}));}}>
                                     {categorias.map((categoria) => (
                                         <option key={categoria?.id} value={categoria?.id}>
@@ -277,7 +295,7 @@ export const AdminProducts = () => {
                                     ))}
                                 </Form.Control>
                                 <br />
-                                <Form.Label>Proveedor</Form.Label>
+                                <Form.Label>Proveedor*</Form.Label>
                                 <Form.Control as="select" onChange={(e)=>{const supplierId=parseInt(e.target.value, 10); setProductoSeleccionado(prevState=>({...prevState,suppliers:{...prevState.suppliers,id:supplierId}}))}} >
                                     {proveedores.map((proveedor)=>(
                                         <option value={proveedor?.id}>{proveedor?.name}</option>
@@ -315,9 +333,7 @@ export const AdminProducts = () => {
                     <Button variant="secondary" onClick={handleClose}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=> {
-                        handleClose();
-                        saveupdate();
+                    <Button variant="primary" onClick={()=> {saveupdate();
                     }} style={{ backgroundColor: '#882d38'}}>
                         Guardar
                     </Button>
