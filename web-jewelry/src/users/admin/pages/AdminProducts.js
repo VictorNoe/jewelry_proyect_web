@@ -3,10 +3,17 @@ import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+<<<<<<< HEAD
 import { Col, Container} from "react-bootstrap";
 import {AuthContext} from "../../../auth";
 import axios from 'axios';
 import {toast, Toaster} from "sonner";
+=======
+import {Col, Container, InputGroup} from "react-bootstrap";
+import {AuthContext} from "../../../auth";
+import axios from 'axios';
+import { Toaster, toast } from 'sonner'
+>>>>>>> adminfront
 
 export const AdminProducts = () => {
     const [show, setShow] = useState(false);
@@ -36,6 +43,7 @@ export const AdminProducts = () => {
     const url_api_productsPost='http://localhost:8080/api/products/';
     const url_api_suppliers="http://localhost:8080/api/suppliers/"
     const {user} = useContext(AuthContext);
+<<<<<<< HEAD
 
     useEffect(()=>{
         fetch(url_api_products,{
@@ -77,7 +85,66 @@ export const AdminProducts = () => {
                 }
             }).catch((err)=>console.log("Error: ",err));
     },[])
+=======
+>>>>>>> adminfront
 
+    useEffect(()=>{
+        getproducts();
+        getsuppliers();
+        getcategories();
+    },[]);
+
+    // funcion para obtener productos actualizados despues de una operación
+    const getproducts=()=>{
+        fetch(url_api_products,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data?.statusCode===200){
+                    setProductos(data?.data);
+                }else if(data?.error===true){
+                    toast.warning("Error al cargar productos");
+                }
+            }).catch((err)=>console.log("Error: ",err));
+    }
+
+    // funcion para obtener las categorias de los productos
+    const getcategories=()=>{
+        fetch(url_api_category,{
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data?.statusCode===200){
+                    setCategorias(data?.data);
+                }else if(data?.error===true){
+                    toast.warning("Error al cargar categorias de productos");
+                }
+            }).catch((err)=>console.log("Error: ",err));
+    }
+    const getsuppliers=()=>{
+        fetch(url_api_suppliers,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
+            }
+        }).then((resp)=>resp.json())
+            .then((data)=>{
+                if(data?.statusCode===200){
+                    setProveedores(data?.data);
+                }else if(data?.error===true){
+                    toast.warning("Error al cargar proveedores");
+                }
+            }).catch((err)=>console.log("Error: ",err));
+    }
 
     const handleClose=()=>{
         setShowModal(false);
@@ -98,10 +165,14 @@ export const AdminProducts = () => {
                 price: 0,
                 discount_price: 0,
                 category: {
+<<<<<<< HEAD
                     id: 1 // ID de la categoría por defecto
+=======
+                    id: 1
+>>>>>>> adminfront
                 },
                 status: {
-                    id: 1, // ID de estatus por defecto
+                    id: 1,
                 },
                 suppliers: {
                     id: 1,
@@ -128,23 +199,32 @@ export const AdminProducts = () => {
             body:JSON.stringify(productoSeleccionado)
         }).then((resp)=>resp.json())
             .then((data)=>{
+<<<<<<< HEAD
                 if(data.statusCode===200){
                     toast.success('Se agrego el producto');
                     console.log("EXITO")
                     getproducts()
+=======
+                if(data?.statusCode===200){
+                    titleModal==="Agregar producto"?toast.success('Producto registrado'):toast.success('Producto actualizado')
+                    getproducts()
+                }else if(data?.error===true){
+                    titleModal==="Agregar producto"?toast.error("Error al registrar"):toast.error("Error al actualizar");
+>>>>>>> adminfront
                 }
             }).catch((err)=>console.log("Error peticion en saveupdate(): ",err));
     }
 
     {/* función para manejar el switch del estatus del producto en el modal*/}
-    const changeStatus=(e)=>{
-        const newStatus = e.target.checked?1:2;
+    const changeStatus=(e)=> {
+        const newStatus = e.target.checked ? 1 : 2;
         setProductoSeleccionado(({
             ...productoSeleccionado,
-            status:{id:newStatus}
+            status: {id: newStatus}
         }))
     }
 
+<<<<<<< HEAD
     // funcion para obtener productos actualizados despues de una operación
     const getproducts=()=>{
         fetch(url_api_products,{
@@ -164,28 +244,46 @@ export const AdminProducts = () => {
     // FUNCIÓN PARA CARGAR IMAGEN
     const fileChange=async (e)=>{
         const file = e.target.files[0];
+=======
+    // FUNCIÓN PARA CARGAR IMAGEN
+    const fileChange=async (e)=>{
+        const file = e?.target?.files[0];
+>>>>>>> adminfront
         const data = new FormData();
 
         data.append("file",file);
         data.append("upload_preset","PRESET_SIVEJO");
 
         const response =  await axios.post("https://api.cloudinary.com/v1_1/dzcgnz5tp/image/upload",data);
+<<<<<<< HEAD
         console.log("RECIBIDO: ",response.data);
         setProductoSeleccionado({
             ...productoSeleccionado,
             image:response.data.secure_url
+=======
+        setProductoSeleccionado({
+            ...productoSeleccionado,
+            image:response?.data?.secure_url
+>>>>>>> adminfront
         })
     }
 
     return (
+<<<<<<< HEAD
         <Container >
             <div style={{ padding: '25px', textAlign: 'center' }}>
+=======
+        <Container style={{height: "90vh", overflowY: "hidden"}}>
+            <div style={{ padding: '25px', textAlign: 'center',height: "10vh" }}>
+>>>>>>> adminfront
                 <h1>Inventario</h1>
             </div>
+            <Toaster position="top-center" richColors/>
             <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end' }}>
                 <button onClick={() => handleShow('Agregar producto')} className='btn btn-success'>Agregar</button>
             </div>
             {/* TABLA DE PRODUCTOS EN EL INVENTARIO */}
+<<<<<<< HEAD
             <div style={{ overflowY: 'scroll', height: '400px' }}>
                 <Table>
                     <Toaster
@@ -194,6 +292,12 @@ export const AdminProducts = () => {
                     />
                     <thead>
                     <tr>
+=======
+            <div style={{ overflowY: 'auto', height: '70vh' }}>
+                <Table >
+                    <thead>
+                    <tr style={{textAlign:'center'}}>
+>>>>>>> adminfront
                         <th style={{ backgroundColor: '#D1D1D1'}}>#</th>
                         <th style={{ backgroundColor: '#D1D1D1',textAlign:'center' }}>Imagen</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Nombre</th>
@@ -210,6 +314,7 @@ export const AdminProducts = () => {
                     <tbody>
                     {productos.map(producto=>(
                         <tr>
+<<<<<<< HEAD
                             <td>{producto.id}</td>
                             <td style={{textAlign: 'center', verticalAlign: 'middle'}}>
                                 <img
@@ -226,6 +331,24 @@ export const AdminProducts = () => {
                             <td>{producto.category.description}</td>
                             <td>{producto.suppliers.name}</td>
                             <td>{producto.status.description}</td>
+=======
+                            <td>{producto?.id}</td>
+                            <td style={{textAlign: 'center', verticalAlign: 'middle'}}>
+                                <img
+                                    src={producto?.image}
+                                    alt={`Imagen de ${producto?.name}`}
+                                    style={{ width: '110px', height: '100px' }}
+                                />
+                            </td>
+                            <td>{producto?.name}</td>
+                            <td>{producto?.description}</td>
+                            <td>{producto?.stock}</td>
+                            <td>${producto?.price}</td>
+                            <td>${producto?.discount_price}</td>
+                            <td>{producto?.category?.description}</td>
+                            <td>{producto?.suppliers?.name}</td>
+                            {producto?.status?.description==="Activo"?(<td><div className="circle-green"></div></td>):(<td><div className="circle-red"></div></td>)}
+>>>>>>> adminfront
                             <td>
                                 <button className='btn btn-primary' onClick={()=>handleShow("Editar información de producto",producto)}>Editar</button>
                             </td>
@@ -242,27 +365,54 @@ export const AdminProducts = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <div>
+                        <div style={{display:'flex',justifyContent:'end'}}>
+                            <Form.Switch checked={!productoSeleccionado || productoSeleccionado?.status?.id === 1} onChange={changeStatus} label={productoSeleccionado?.status?.id===1?'Producto Activo':'Producto Inactivo'}/>
+                            <br/>
+                        </div>
                         <Form.Label>Nombre del producto</Form.Label>
                         <Form.Control type='text' value={productoSeleccionado?.name || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,name:e.target.value})}/>
                         <br />
                         <Form.Label>Descripción</Form.Label>
                         <Form.Control type="text" value={productoSeleccionado?.description || ''} onChange={(e)=>setProductoSeleccionado({...productoSeleccionado,description:e.target.value})}/>
-                        <br />
+                        <br/>
                         <Form.Label>Stock</Form.Label>
                         <Form.Control type='number' value={productoSeleccionado?.stock || ''} onChange={(e)=>{const inputstock = parseInt(e.target.value);if(inputstock>=0 || e.target.value==='') setProductoSeleccionado({...productoSeleccionado,stock:parseInt(e.target.value)})}}/>
+<<<<<<< HEAD
                         <br />
                         <Form.Label>Precio</Form.Label>
                         <Form.Control type='number' value={productoSeleccionado?.price || ''} onChange={(e)=> {const inputprice = parseFloat(e.target.value); if (inputprice >= 0 || e.target.value === '') {setProductoSeleccionado({...productoSeleccionado, price: parseFloat(e.target.value)})}}}/>
                         <br />
                         <Form.Label>Descuento</Form.Label>
                         <Form.Control type='number' value={productoSeleccionado?.discount_price || ''} onChange={(e)=>{const inputdiscount=parseFloat(e.target.value); if(inputdiscount>=0 || e.target.value===''){setProductoSeleccionado({...productoSeleccionado,discount_price:parseFloat(e.target.value)})}}}/>
+=======
+                        <br/>
+                        <Form.Label>Precio</Form.Label>
+                        <InputGroup>
+                            <InputGroup.Text id="btnGroupAddon">$</InputGroup.Text>
+                            <Form.Control type='number' value={productoSeleccionado?.price || ''} onChange={(e)=> {const inputprice = parseFloat(e.target.value); if (inputprice >= 0 || e.target.value === '') {setProductoSeleccionado({...productoSeleccionado, price: parseFloat(e.target.value)})}}}/>
+                        </InputGroup>
+
+                        <br/>
+                        <Form.Label>Descuento</Form.Label>
+                        <InputGroup>
+                            <InputGroup.Text id="btnGroupAddon">$</InputGroup.Text>
+                            <Form.Control type='number' value={productoSeleccionado?.discount_price || ''} onChange={(e)=>{const inputdiscount=parseFloat(e.target.value); if(inputdiscount>=0 || e.target.value===''){setProductoSeleccionado({...productoSeleccionado,discount_price:parseFloat(e.target.value)})}}}/>
+                        </InputGroup>
+
+>>>>>>> adminfront
                         <br />
                         {titleModal==='Agregar producto'?(
                             <div>
                                 <Form.Label>Categoría</Form.Label>
+<<<<<<< HEAD
                                 <Form.Control as="select"  onChange={(e) => {const categoryId = parseInt(e.target.value, 10); setProductoSeleccionado(prevState => ({...prevState, category: {...prevState.category, id: categoryId}}));}}>
                                     {categorias.map((categoria) => (
                                         <option key={categoria?.id} value={categoria.id}>
+=======
+                                <Form.Control as="select"  onChange={(e) => {const categoryId = parseInt(e.target.value, 10); setProductoSeleccionado(prevState => ({...prevState, category: {...prevState?.category, id: categoryId}}));}}>
+                                    {categorias.map((categoria) => (
+                                        <option key={categoria?.id} value={categoria?.id}>
+>>>>>>> adminfront
                                             {categoria?.description}
                                         </option>
                                     ))}
@@ -271,7 +421,11 @@ export const AdminProducts = () => {
                                 <Form.Label>Proveedor</Form.Label>
                                 <Form.Control as="select" onChange={(e)=>{const supplierId=parseInt(e.target.value, 10); setProductoSeleccionado(prevState=>({...prevState,suppliers:{...prevState.suppliers,id:supplierId}}))}} >
                                     {proveedores.map((proveedor)=>(
+<<<<<<< HEAD
                                         <option value={proveedor.id}>{proveedor.name}</option>
+=======
+                                        <option value={proveedor?.id}>{proveedor?.name}</option>
+>>>>>>> adminfront
                                     ))}
                                 </Form.Control>
                                 <br/>
@@ -288,9 +442,12 @@ export const AdminProducts = () => {
                         )}
                         {}
 
+<<<<<<< HEAD
                         <Form.Label>Estatus</Form.Label>
                         <Form.Switch checked={!productoSeleccionado || productoSeleccionado.status.id === 1} onChange={changeStatus} label={productoSeleccionado?.status?.id===1?'Activo':'Inactivo'}/>
                         <br/>
+=======
+>>>>>>> adminfront
                         <Form.Group controlId="formFile" className="mb-3">
                             <Form.Label>Imagen</Form.Label>
                             <Form.Control type="file" onChange={fileChange}/>
@@ -298,7 +455,11 @@ export const AdminProducts = () => {
                         <div style={{display:'flex',justifyContent:'center'}}>
                             <Col xs={6} md={4}>
                                 {productoSeleccionado?.image && (
+<<<<<<< HEAD
                                     <img style={{maxWidth:"100%"}} src={productoSeleccionado.image} alt='Vista previa' rounded />
+=======
+                                    <img style={{maxWidth:"100%"}} src={productoSeleccionado?.image} alt='Vista previa' rounded />
+>>>>>>> adminfront
                                 )}
                             </Col>
                         </div>
@@ -312,7 +473,11 @@ export const AdminProducts = () => {
                     <Button variant="primary" onClick={()=> {
                         handleClose();
                         saveupdate();
+<<<<<<< HEAD
                     }}>
+=======
+                    }} style={{ backgroundColor: '#882d38'}}>
+>>>>>>> adminfront
                         Guardar
                     </Button>
                 </Modal.Footer>

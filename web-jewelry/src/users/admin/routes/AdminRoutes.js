@@ -14,6 +14,7 @@ export const AdminRoutes = () => {
                 <Route path="proveedores" element={<Supplier/>}/>
                 <Route path="productos" element={<AdminProducts/>}/>
                 <Route path="usuarios" element={<Users/>}/>
+                <Route path="ventas" />
                 <Route path="/" element={<Navigate to={"/home"} />}/>
             </Routes>
 
