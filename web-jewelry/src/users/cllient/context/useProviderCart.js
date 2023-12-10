@@ -2,13 +2,59 @@ import {UseContextCart} from "./useContextCart";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../auth/context/AuthContext";
 
-export const UserProviderCart = ({ children }) => {
+export const UseProviderCart = ({ children }) => {
 
     const {user} = useContext(AuthContext)
     const [total, setTotal] = useState(0)
     const [subTotal, setSubTotal] = useState(0)
     const [item, setItem] = useState(0)
     const [data, setData] = useState(0)
+
+    const [products, setProducts] = useState([]);
+    const [productsCopy, setProductsCopy] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [countProducts, setContProcuts] = useState(false);
+    const [categorys, setCategorys] = useState(0);
+
+    const getProductCategory = (id_category) => {
+        if (id_category !== 0) {
+            const conProduct = productsCopy.filter(
+                (product) =>{
+                    return product?.category.id === id_category;
+                }
+            )
+            setProducts(conProduct);
+            if (conProduct.length <= 0){
+                setContProcuts(true);
+            } else {
+                setContProcuts(false);
+            }
+        } else {
+            getProductJewelry()
+            setContProcuts(false);
+        }
+    }
+
+    const getProductJewelry = async () => {
+        await fetch("http://localhost:8080/api/products/", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setProductsCopy(data.data);
+                setProducts(data.data);
+                setIsLoading(false);
+                if (data.data.length <= 0 ){
+                    setProductsCopy(data.data);
+                    setProducts(data.data);
+                    setContProcuts(true);
+                }
+            })
+            .catch((err) => console.log(err));
+    }
 
     const getTotal = async () => {
         await fetch(`http://localhost:8080/api/cart/consult`, {
@@ -51,10 +97,11 @@ export const UserProviderCart = ({ children }) => {
 
     useEffect(()=> {
         getTotal();
+        getProductJewelry();
     },[])
 
     return (
-        <UseContextCart.Provider value={{data, item, total, subTotal, getTotal}}>
+        <UseContextCart.Provider value={{data, item, total, subTotal, getTotal, products, isLoading, countProducts, setProducts, setCategorys, categorys, productsCopy, getProductCategory}}>
             {children}
         </UseContextCart.Provider>
     )

@@ -22,7 +22,7 @@ export const useServicesAddCart = () => {
         }
     });
 
-    const getStatus = async (id_cart, total) => {
+    const getStatus = async () => {
         await fetch(`http://localhost:8080/api/reserved/frecuente/${user?.email}`, {
             method: "GET",
             headers: {

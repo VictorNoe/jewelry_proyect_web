@@ -5,11 +5,11 @@ import {LoginPage} from "../auth/pages/LoginPage";
 import {Register} from "../users/cllient/pages/Register";
 import {RecoverPasswordPage} from "../auth/pages/RecoverPasswordPage";
 import {ProductPage} from "../users/cllient/pages/ProductPage";
-import {UserProviderCart} from "../users/cllient/context/userProviderCart";
+import {UseProviderCart} from "../users/cllient/context/useProviderCart";
 
 export const PublicRoutes = () => {
     return (
-        <UserProviderCart>
+        <UseProviderCart>
             <NavbarClient/>
 
             <Routes>
@@ -21,6 +21,6 @@ export const PublicRoutes = () => {
                 <Route path="product/:id" element={<ProductPage/>}/>
                 <Route path="*" element={<Navigate to={"/home"} />}/>
             </Routes>
-        </UserProviderCart>
+        </UseProviderCart>
     )
 }

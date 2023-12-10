@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import { Col, Container} from "react-bootstrap";
 import {AuthContext} from "../../../auth";
 import axios from 'axios';
+import {toast, Toaster} from "sonner";
 
 export const AdminProducts = () => {
     const [show, setShow] = useState(false);
@@ -128,6 +129,7 @@ export const AdminProducts = () => {
         }).then((resp)=>resp.json())
             .then((data)=>{
                 if(data.statusCode===200){
+                    toast.success('Se agrego el producto');
                     console.log("EXITO")
                     getproducts()
                 }
@@ -176,7 +178,7 @@ export const AdminProducts = () => {
     }
 
     return (
-        <Container>
+        <Container >
             <div style={{ padding: '25px', textAlign: 'center' }}>
                 <h1>Inventario</h1>
             </div>
@@ -186,6 +188,10 @@ export const AdminProducts = () => {
             {/* TABLA DE PRODUCTOS EN EL INVENTARIO */}
             <div style={{ overflowY: 'scroll', height: '400px' }}>
                 <Table>
+                    <Toaster
+                        richColors
+                        position="top-center"
+                    />
                     <thead>
                     <tr>
                         <th style={{ backgroundColor: '#D1D1D1'}}>#</th>

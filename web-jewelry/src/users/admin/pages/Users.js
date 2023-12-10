@@ -157,8 +157,8 @@ export const Users = () => {
                         <th style={{ backgroundColor: '#D1D1D1' }}>Nombre completo</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Correo electrónico</th>
                         <th style={{ backgroundColor: '#D1D1D1' }}>Dirección</th>
-                        <th style={{ backgroundColor: '#D1D1D1' }}>Estatus</th>
-                        <th style={{ backgroundColor: '#D1D1D1' }}>Acciones</th>
+                        <th style={{ backgroundColor: '#D1D1D1' }} className="text-center">Estatus</th>
+                        <th style={{ backgroundColor: '#D1D1D1' }} className="text-center">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -169,7 +169,7 @@ export const Users = () => {
                             <td>{usuario.email}</td>
                             <td>{usuario.address}</td>
                             {usuario.status.description==="Activo"?(<td><div className="circle-green"></div></td>):(<td><div className="circle-red"></div></td>)}
-                            <td>
+                            <td className="text-center">
                                 <button onClick={()=>openModal('Editar usuario',usuario)} className='btn btn-primary'>Editar</button>
                             </td>
                         </tr>

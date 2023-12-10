@@ -2,13 +2,15 @@
 import {ProductsCards} from "../componests/product/ProductsCards";
 import {Container, Row} from "react-bootstrap";
 import "../css/index.css"
-import {useServicesAllProducts} from "../hooks/useServicesAllProducts";
 import {DontProducts} from "../componests/product/DontProducts";
 import {Loading} from "../componests/Loading";
+import {useContext} from "react";
+import {UseContextProducts} from "../context/useContextProducts";
+import {UseContextCart} from "../context/useContextCart";
 
 export const HomeProducts = () => {
 
-    const { products, isLoading, countProducts } = useServicesAllProducts();
+    const { products, isLoading, countProducts } = useContext(UseContextCart);
 
     return (
         <>

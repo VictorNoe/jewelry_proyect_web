@@ -1,12 +1,40 @@
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../auth/context/AuthContext";
+import {toast} from "sonner";
 
 export const useServiceUpdateUser = () => {
 
     const { user } = useContext( AuthContext )
     const [ clientInfo, setCLientInfo] = useState([]);
 
+    const updatePassaworUser = async (new_passwors,old_password) => {
+        await fetch(`http://localhost:8080/api/users/updatePassword`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.token}`
+            },
+            body: JSON.stringify({
+                "email": clientInfo?.email,
+                "old_password": old_password,
+                "new_password": new_passwors
+            })
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                console.log(data)
+                if (data.statusCode === 200) {
+                    toast.success('Contraeña Actualizada')
+                    getUser()
+                } else if (data.statusCode !== 200){
+                    toast.error('Fallo en la actualización')
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+
     const updateUser = async (name, lastNameM, lastNameP, address) => {
+        console.log(name, lastNameM, lastNameP, address)
         await fetch(`http://localhost:8080/api/users/`, {
             method: "PUT",
             headers: {
@@ -14,7 +42,6 @@ export const useServiceUpdateUser = () => {
                 'Authorization': `Bearer ${user?.token}`
             },
             body: JSON.stringify({
-                "id": clientInfo?.id,
                 "email": clientInfo?.email,
                 "password": clientInfo?.password,
                 "name": name,
@@ -32,6 +59,12 @@ export const useServiceUpdateUser = () => {
             .then((resp) => resp.json())
             .then((data) => {
                 console.log(data)
+                if (data.statusCode === 200) {
+                    toast.success('Informacion Actualizada')
+                    getUser()
+                } else if (data.statusCode !== 200){
+                    toast.error('Fallo en la actualización')
+                }
             })
             .catch((err) => console.log(err));
     }
@@ -58,6 +91,7 @@ export const useServiceUpdateUser = () => {
 
     return{
         clientInfo,
-        updateUser
+        updateUser,
+        updatePassaworUser
     }
 }

@@ -5,12 +5,12 @@ import {ShoppingCart} from "../pages/ShoppingCart";
 import {PorfielClient} from "../pages/PorfielClient";
 import {History} from "../pages/History";
 import {ProductPage} from "../pages/ProductPage";
-import {UserProviderCart} from "../context/userProviderCart";
+import {UseProviderCart} from "../context/useProviderCart";
 import {Reservas} from "../pages/Reservas";
 
 export const ClientRoutes = () => {
     return (
-        <UserProviderCart>
+        <UseProviderCart>
             <NavbarClient/>
 
             <Routes>
@@ -23,6 +23,6 @@ export const ClientRoutes = () => {
                 <Route path="separate" element={<Reservas/>}/>
                 <Route path="*" element={<Navigate to={"/home"} />}/>
             </Routes>
-        </UserProviderCart>
+        </UseProviderCart>
     )
 }

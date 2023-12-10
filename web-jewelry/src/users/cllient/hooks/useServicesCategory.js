@@ -1,28 +1,30 @@
-import {useContext} from "react";
-import {AuthContext} from "../../../auth/context/AuthContext";
+import {useEffect, useState} from "react";
 
 export const useServicesCategory = () => {
 
-    const { user } = useContext( AuthContext );
+    const [category, setCategory] =  useState([]);
 
     const getCategory = async () => {
         await fetch(`http://localhost:8080/api/category/`, {
             method: "GET",
             headers: {
                 "Content-type": "application/json",
-                'Authorization': `Bearer ${user?.token}`
             }
         })
             .then((response) => response.json())
             .then((data) => {
-                if (data.data.statusCode === 200) {
-
+                if (data.statusCode === 200) {
+                    setCategory(data.data)
                 }
             })
             .catch((err) => console.log(err));
     }
 
+    useEffect(()=>{
+        getCategory();
+    },[])
+
     return {
-        getCategory
+        category
     }
 }

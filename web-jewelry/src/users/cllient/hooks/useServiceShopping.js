@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 export const useServiceShopping = () => {
     const {user} = useContext(AuthContext)
-    const {item, total} = useContext(UseContextCart);
+    const {item, total, getTotal} = useContext(UseContextCart);
 
     const navigate = useNavigate();
 
@@ -59,6 +59,7 @@ export const useServiceShopping = () => {
                             if (data.statusCode === 200) {
                                 if (sendEmailService === true) {
                                     sendEmail()
+                                    getTotal()
                                 }
                                 Swal.fire({
                                     icon: "success",

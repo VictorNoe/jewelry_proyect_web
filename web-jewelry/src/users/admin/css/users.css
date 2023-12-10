@@ -8,6 +8,7 @@
 
 /* Círculo Verde */
 .circle-green {
+    margin: 0 auto;
     width: 20px;
     height: 20px;
     background-color: #009d00;
