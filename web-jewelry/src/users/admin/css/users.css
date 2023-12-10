@@ -1,5 +1,6 @@
 /* Círculo Rojo */
 .circle-red {
+    margin: 0 auto;
     width: 20px;
     height: 20px;
     background-color: #ff0000;
@@ -8,6 +9,7 @@
 
 /* Círculo Verde */
 .circle-green {
+    margin: 0 auto;
     width: 20px;
     height: 20px;
     background-color: #009d00;

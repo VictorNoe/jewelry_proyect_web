@@ -3,10 +3,13 @@ import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import {Container} from "react-bootstrap";
+import {Container, Image, InputGroup} from "react-bootstrap";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import {AuthContext} from "../../../auth";
 import {users} from "../css/users.css";
+import eye from "../../../image/eye-fill.svg";
+import eyeSlash from "../../../image/eye-slash-fill.svg";
+import { Toaster, toast } from 'sonner'
 
 export const Users = () => {
     // USESTATE PARA MODAL DE AGREGAR
@@ -26,18 +29,7 @@ export const Users = () => {
     const {user} = useContext(AuthContext);
 
     useEffect(()=>{
-        fetch(url_api_users,{
-            method:"GET",
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':`Bearer ${user?.token}`
-            }
-        }).then((resp)=>resp.json())
-            .then((data)=>{
-                if(data.statusCode===200){
-                    setUsuarios(data.data)
-                }
-            }).catch((err)=>console.log("Error en consulta de usuarios: ",err))
+        getusersnews()
     },[]);
 
     //función para cerrar el modal
@@ -57,8 +49,8 @@ export const Users = () => {
             }
         }).then((resp)=>resp.json())
             .then((data)=>{
-                if(data.statusCode===200){
-                    setUsuarios(data.data)
+                if(data?.statusCode===200){
+                    setUsuarios(data?.data)
                 }
             }).catch((err)=>console.log("Error en consulta de usuarios: ",err))
     }
@@ -75,22 +67,24 @@ export const Users = () => {
         const { status, rol, password, ...userData } = usuarioSeleccionado;
         const updatedUser = {
             ...userData,
-            status: {id:status.id},
-            rol: {id:rol.id}
+            status: {id:status?.id},
+            rol: {id:rol?.id}
         };
         console.log(updatedUser)
-        /*fetch(url_api_users,{
+        fetch(url_api_users,{
             method:'PUT',
             headers:{
-                'Content-Type':'application/JSON',
-                'Authorization':`Barer ${user?.token}`
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${user?.token}`
             },
             body:JSON.stringify(updatedUser)
         }).then((resp)=>resp.json())
             .then((data)=>{
-                console.log("RECIBIDO",data);
-                getusersnews();
-            }).catch((err)=>console.log("Error en updateUser(): ",err))*/
+                if(data?.statusCode===200){
+
+                    getusersnews();
+                }
+            }).catch((err)=>console.log("Error en updateUser(): ",err))
         closeModal();
         setUsuarioSeleccionado(null);
     }
@@ -131,10 +125,9 @@ export const Users = () => {
             body:JSON.stringify(usuarioSeleccionado)
         }).then((resp)=>resp.json())
             .then((data)=>{
-            if(data.statusCode===200){
-                console.log("EXITO")
+            if(data?.statusCode===200){
                 getusersnews()
-            }else if(data.error===true){
+            }else if(data?.error===true){
                 console.log("USUARIO YA EXISTE");
             }
         }).catch((err)=>console.log("Error al agregar en adduser(): ",err))
@@ -142,14 +135,15 @@ export const Users = () => {
     }
 
     return (
-        <Container>
-            <div style={{padding: '25px', textAlign: 'center'}}>
+        <Container style={{height: "90vh", overflowY: "hidden"}}>
+            <div style={{padding: '25px', textAlign: 'center', height: "10vh"}}>
                 <h1>Lista de usuarios</h1>
             </div>
+            <Toaster position="top-center" richColors/>
             <div style={{padding: '20px', display: 'flex', justifyContent: 'flex-end'}}>
                 <button onClick={openModalAdd} className='btn btn-success'>Agregar</button>
             </div>
-            <div>
+            <div style={{ overflowY: 'auto', height: '70vh' }}>
                 <Table>
                     <thead>
                     <tr>
@@ -164,11 +158,11 @@ export const Users = () => {
                     <tbody>
                     {usuarios.map(usuario => (
                         <tr>
-                            <td>{usuario.id}</td>
-                            <td>{usuario.name} {usuario.surname} {usuario.second_surname}</td>
-                            <td>{usuario.email}</td>
-                            <td>{usuario.address}</td>
-                            {usuario.status.description==="Activo"?(<td><div className="circle-green"></div></td>):(<td><div className="circle-red"></div></td>)}
+                            <td>{usuario?.id}</td>
+                            <td>{usuario?.name} {usuario?.surname} {usuario?.second_surname}</td>
+                            <td>{usuario?.email}</td>
+                            <td>{usuario?.address}</td>
+                            {usuario?.status?.description==="Activo"?(<td><div className="circle-green"></div></td>):(<td><div className="circle-red"></div></td>)}
                             <td>
                                 <button onClick={()=>openModal('Editar usuario',usuario)} className='btn btn-primary'>Editar</button>
                             </td>
@@ -178,7 +172,7 @@ export const Users = () => {
                 </Table>
             </div>
 
-            {/* MODAL */}
+            {/* MODAL PARA ACTUALIZAR USUARIO*/}
             <Modal style={{ margin: 'auto', top: '5vh',height:'90vh'}} show={showModal} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>{titleModal}</Modal.Title>
@@ -199,18 +193,8 @@ export const Users = () => {
                         <Form.Control type='text' value={usuarioSeleccionado?.second_surname || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,second_surname:e.target.value})}/>
                         <br />
                         <Form.Label>Correo electrónico</Form.Label>
-                        <Form.Control type='email' value={usuarioSeleccionado?.email || ''}  onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,email:e.target.value})}/>
+                        <Form.Control disabled type='email' value={usuarioSeleccionado?.email || ''}  onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,email:e.target.value})}/>
                         <br />
-                        {/*
-                        <Form.Label>Contraseña</Form.Label>
-                        <div style={{display:'flex'}}>
-                            <Form.Control type={showPassword?'text':'password'} value={usuarioSeleccionado?.password || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,password:e.target.value})}/>
-                            <span style={{marginLeft:'10px',cursor:'pointer',fontSize:'25px'}} onClick={()=>setShowPassword(!showPassword)}>
-                            {showPassword?'🙉':'🙈'}
-                            </span>
-                        </div>
-                        <br />
-                        */}
                         <Form.Label>Dirección</Form.Label>
                         <Form.Control type='text' value={usuarioSeleccionado?.address || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,address:e.target.value})}></Form.Control>
                     </div>
@@ -219,7 +203,7 @@ export const Users = () => {
                     <Button variant="secondary" onClick={closeModal}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=>updateUser()}>
+                    <Button onClick={()=>updateUser()} style={{ backgroundColor: '#882d38'}}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>
@@ -250,12 +234,10 @@ export const Users = () => {
                         </FloatingLabel>
                         <br />
                         <Form.Label>Contraseña</Form.Label>
-                        <div style={{display:'flex'}}>
+                        <InputGroup>
                             <Form.Control type={showPassword?'text':'password'} value={usuarioSeleccionado?.password || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,password:e.target.value})}/>
-                            <span style={{marginLeft:'10px',cursor:'pointer',fontSize:'25px'}} onClick={()=>setShowPassword(!showPassword)}>
-                            {showPassword?'🙉':'🙈'}
-                            </span>
-                        </div>
+                            <Button style={{backgroundColor:'#BDBDBD', borderColor:'transparent', color:'black'}} onClick={()=>setShowPassword(!showPassword)}  >{showPassword?<Image src={eye}/>:<Image src={eyeSlash}/>}</Button>
+                        </InputGroup>
                         <br />
                         <Form.Label>Dirección</Form.Label>
                         <Form.Control type='text' value={usuarioSeleccionado?.address || ''} onChange={(e)=>setUsuarioSeleccionado({...usuarioSeleccionado,address:e.target.value})}></Form.Control>
@@ -265,7 +247,7 @@ export const Users = () => {
                     <Button variant="secondary" onClick={closeModal}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" onClick={()=>adduser()}>
+                    <Button onClick={()=>adduser()} style={{ backgroundColor: '#882d38'}}>
                         Guardar cambios
                     </Button>
                 </Modal.Footer>
